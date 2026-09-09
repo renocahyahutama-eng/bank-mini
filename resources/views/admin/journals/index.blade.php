@@ -2,21 +2,11 @@
 
 @section('title', 'Jurnal Akuntansi')
 
-@section('sidebar')
-    <div class="nav-label">Menu Utama</div>
-    <a href="{{ route('admin.dashboard') }}" class="nav-item"><span class="nav-icon">📊</span> Dashboard</a>
-    <a href="{{ route('admin.users.index') }}" class="nav-item"><span class="nav-icon">👥</span> Manajemen User</a>
-    <a href="{{ route('admin.nasabah.index') }}" class="nav-item"><span class="nav-icon">🎓</span> Manajemen Nasabah</a>
-    <div class="nav-label">Laporan</div>
-    <a href="{{ route('admin.transactions.index') }}" class="nav-item"><span class="nav-icon">💳</span> Data Transaksi</a>
-    <a href="{{ route('admin.journals.index') }}" class="nav-item active"><span class="nav-icon">📒</span> Jurnal Akuntansi</a>
-@endsection
-
 @section('content')
     <div class="page-header">
         <div>
             <h1>Jurnal Akuntansi</h1>
-            <div class="breadcrumb">Admin / Jurnal Akuntansi</div>
+            <div class="breadcrumb">Admin / Catatan Pembukuan Keuangan Bank</div>
         </div>
     </div>
 
@@ -38,21 +28,24 @@
                     @forelse($journals as $i => $journal)
                         <tr>
                             <td>{{ $journals->firstItem() + $i }}</td>
-                            <td>{{ $journal->created_at->format('d/m/Y H:i') }}</td>
-                            <td class="font-mono font-bold">{{ $journal->account_code === '101' ? '101 - Kas' : '201 - Tabungan' }}</td>
+                            <td>
+                                <span style="font-weight:600;">{{ $journal->created_at->format('H:i') }}</span>
+                                <span style="font-size:0.72rem; color:var(--text-muted); display:block;">{{ $journal->created_at->format('d/m/Y') }}</span>
+                            </td>
+                            <td class="font-mono font-bold">{{ $journal->account_code }}</td>
                             <td>
                                 @if($journal->position === 'Debit')
-                                    <span class="badge badge-primary">Debit</span>
+                                    <span class="badge badge-info">Debit</span>
                                 @else
-                                    <span class="badge badge-info">Kredit</span>
+                                    <span class="badge badge-warning">Credit</span>
                                 @endif
                             </td>
-                            <td class="font-mono">Rp {{ number_format($journal->amount, 0, ',', '.') }}</td>
+                            <td class="font-mono font-bold">Rp {{ number_format($journal->amount, 0, ',', '.') }}</td>
                             <td>{{ $journal->transaction->nasabah->student_name ?? '-' }}</td>
                             <td>{{ $journal->transaction->user->name ?? '-' }}</td>
                         </tr>
                     @empty
-                        <tr><td colspan="7" class="text-center text-muted" style="padding:2rem">Belum ada jurnal.</td></tr>
+                        <tr><td colspan="7" class="text-center text-muted" style="padding:2.5rem 1rem;">Belum ada jurnal akuntansi yang tercatat.</td></tr>
                     @endforelse
                 </tbody>
             </table>

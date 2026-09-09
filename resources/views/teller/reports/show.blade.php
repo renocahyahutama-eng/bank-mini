@@ -2,38 +2,32 @@
 
 @section('title', 'Detail Laporan Harian')
 
-@section('sidebar')
-    <div class="nav-label">Menu Utama</div>
-    <a href="{{ route('teller.dashboard') }}" class="nav-item"><span class="nav-icon">📊</span> Dashboard</a>
-    <a href="{{ route('teller.nasabah.index') }}" class="nav-item"><span class="nav-icon">🔍</span> Cari Nasabah</a>
-    <div class="nav-label">Transaksi Loket</div>
-    <a href="{{ route('teller.deposit.create') }}" class="nav-item"><span class="nav-icon">📥</span> Setoran Tunai</a>
-    <a href="{{ route('teller.withdrawal.create') }}" class="nav-item"><span class="nav-icon">📤</span> Penarikan Tunai</a>
-    <div class="nav-label">Laporan & Riwayat</div>
-    <a href="{{ route('teller.transactions.index') }}" class="nav-item"><span class="nav-icon">🧾</span> Riwayat Transaksi</a>
-    <a href="{{ route('teller.reports.index') }}" class="nav-item active"><span class="nav-icon">📅</span> Laporan Harian</a>
-@endsection
-
 @section('content')
     <div class="page-header">
         <div>
             <h1>Detail Laporan Harian ({{ $report->report_date->format('d/m/Y') }})</h1>
-            <div class="breadcrumb">Teller / Laporan Harian / Detail</div>
+            <div class="breadcrumb">Loket Teller / Rekapitulasi Kas / Detail</div>
         </div>
-        <a href="{{ route('teller.reports.index') }}" class="btn btn-secondary">← Kembali</a>
+        <a href="{{ route('teller.reports.index') }}" class="btn btn-secondary">
+            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+            Kembali
+        </a>
     </div>
 
     @if($report->status === 'Draft' || $report->status === 'Rejected')
         <div class="card mb-3" style="border: 1px solid var(--primary); background: var(--primary-light);">
             <div class="card-body text-center">
-                <h3 style="margin-bottom: 0.5rem; color: var(--primary);">Laporan siap disubmit</h3>
+                <h3 style="margin-bottom: 0.5rem; color: var(--primary);">Laporan siap diajukan</h3>
                 <p style="margin-bottom: 1rem; color: var(--text-secondary); font-size: 0.85rem;">
-                    Silakan serahkan uang fisik beserta bundel slip transaksi ke Supervisor, lalu klik tombol Submit.
+                    Silakan serahkan uang fisik kas loket ke Supervisor, lalu klik tombol ajukan di bawah ini.
                 </p>
                 <form action="{{ route('teller.reports.submit', $report) }}" method="POST">
                     @csrf
                     @method('PATCH')
-                    <button type="submit" class="btn btn-primary btn-lg" onclick="return confirm('Kirim laporan ini ke Supervisor?')">Submit Laporan ke Supervisor</button>
+                    <button type="submit" class="btn btn-primary btn-lg" onclick="return confirm('Kirim laporan ini ke Supervisor?')">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                        Submit Laporan ke Supervisor
+                    </button>
                 </form>
             </div>
         </div>
@@ -43,13 +37,13 @@
         <div class="alert alert-error mb-3">
             <strong>Laporan Ditolak oleh Supervisor!</strong><br>
             Alasan: {{ $report->rejection_reason }}<br>
-            <em style="font-size: 0.8rem;">Silakan perbaiki data/fisik uang, lalu submit ulang.</em>
+            <em style="font-size: 0.8rem;">Silakan cocokkan kembali fisik uang kas dan submit ulang.</em>
         </div>
     @endif
 
     <div class="card" style="max-width: 800px; margin: 0 auto;">
-        <div class="card-header">
-            <h3>Rekapitulasi Kas</h3>
+        <div class="card-header" style="display:flex; justify-content:space-between; align-items:center;">
+            <h3 style="margin:0;">Rekapitulasi Kas Loket</h3>
             <div>
                 @if($report->status === 'Draft')
                     <span class="badge badge-secondary">Draft</span>
@@ -63,7 +57,6 @@
             </div>
         </div>
         <div class="card-body">
-            
             <div class="info-box">
                 <div class="info-row"><span class="label">Tanggal Laporan</span><span class="value">{{ $report->report_date->format('d/m/Y') }}</span></div>
                 <div class="info-row"><span class="label">Petugas Teller</span><span class="value">{{ $report->teller->name }}</span></div>
@@ -79,11 +72,11 @@
                 </div>
                 <div class="report-summary-item">
                     <div class="rs-label">Total Setoran</div>
-                    <div class="rs-value deposit font-mono">+ Rp {{ number_format($report->total_deposit, 0, ',', '.') }}</div>
+                    <div class="rs-value deposit font-mono" style="color:var(--success);">+ Rp {{ number_format($report->total_deposit, 0, ',', '.') }}</div>
                 </div>
                 <div class="report-summary-item">
                     <div class="rs-label">Total Penarikan</div>
-                    <div class="rs-value withdrawal font-mono">- Rp {{ number_format($report->total_withdrawal, 0, ',', '.') }}</div>
+                    <div class="rs-value withdrawal font-mono" style="color:var(--danger);">- Rp {{ number_format($report->total_withdrawal, 0, ',', '.') }}</div>
                 </div>
             </div>
 
@@ -91,7 +84,6 @@
                 <div class="balance-label">Saldo Akhir Sistem (Total Kas Disetor)</div>
                 <div class="balance-amount">Rp {{ number_format($report->closing_balance, 0, ',', '.') }}</div>
             </div>
-
         </div>
     </div>
 @endsection

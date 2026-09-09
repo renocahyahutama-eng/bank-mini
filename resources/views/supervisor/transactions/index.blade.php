@@ -2,15 +2,7 @@
 
 @section('title', 'Data Transaksi')
 
-@section('sidebar')
-    <div class="nav-label">Menu Utama</div>
-    <a href="{{ route('supervisor.dashboard') }}" class="nav-item"><span class="nav-icon">📊</span> Dashboard</a>
-    <div class="nav-label">Validasi & Kontrol</div>
-    <a href="{{ route('supervisor.reports.index') }}" class="nav-item"><span class="nav-icon">✅</span> Validasi Laporan</a>
-    <div class="nav-label">Audit & Pemantauan</div>
-    <a href="{{ route('supervisor.transactions.index') }}" class="nav-item active"><span class="nav-icon">💳</span> Data Transaksi</a>
-    <a href="{{ route('supervisor.journals.index') }}" class="nav-item"><span class="nav-icon">📒</span> Jurnal Akuntansi</a>
-@endsection
+
 
 @section('content')
     <div class="page-header">

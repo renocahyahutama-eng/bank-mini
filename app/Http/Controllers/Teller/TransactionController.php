@@ -13,6 +13,15 @@ class TransactionController extends Controller
         $query = Transaction::with(['nasabah', 'user'])
             ->where('user_id', auth()->id());
 
+        if ($search = $request->input('search')) {
+            $query->where(function ($q) use ($search) {
+                $q->whereHas('nasabah', function ($nq) use ($search) {
+                    $nq->where('student_name', 'like', "%{$search}%")
+                       ->orWhere('account_number', 'like', "%{$search}%");
+                })->orWhere('description', 'like', "%{$search}%");
+            });
+        }
+
         if ($type = $request->input('type')) {
             $query->where('transaction_type', $type);
         }
@@ -21,8 +30,19 @@ class TransactionController extends Controller
             $query->whereDate('created_at', $date);
         }
 
-        $transactions = $query->orderByDesc('created_at')->paginate(20);
+        $transactions = $query->orderByDesc('created_at')->paginate(20)->withQueryString();
 
-        return view('teller.transactions.index', compact('transactions'));
+        return view('teller.transactions.index', compact('transactions', 'search'));
+    }
+
+    /**
+     * Tampilan struk digital transaksi yang dapat dicetak/disimpan sebagai PDF.
+     */
+    public function receipt(Transaction $transaction)
+    {
+        // Pastikan relasi ter-load
+        $transaction->load(['nasabah', 'user']);
+
+        return view('teller.transactions.receipt', compact('transaction'));
     }
 }

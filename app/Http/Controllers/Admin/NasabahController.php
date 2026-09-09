@@ -11,16 +11,36 @@ use Illuminate\Support\Facades\Hash;
 
 class NasabahController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $nasabahs = Nasabah::with('customerAccount')->orderByDesc('created_at')->get();
-        return view('admin.nasabah.index', compact('nasabahs'));
+        $query = Nasabah::with('customerAccount');
+
+        if ($search = $request->input('search')) {
+            $query->where(function ($q) use ($search) {
+                $q->where('account_number', 'like', "%{$search}%")
+                  ->orWhere('student_number', 'like', "%{$search}%")
+                  ->orWhere('student_name', 'like', "%{$search}%")
+                  ->orWhere('class', 'like', "%{$search}%")
+                  ->orWhere('jurusan', 'like', "%{$search}%");
+            });
+        }
+
+        if ($status = $request->input('status')) {
+            $query->where('status', $status);
+        }
+
+        $nasabahs = $query->orderByDesc('created_at')->paginate(15)->withQueryString();
+
+        return view('admin.nasabah.index', compact('nasabahs', 'search'));
     }
 
     public function create()
     {
-        $accountNumber = Nasabah::generateAccountNumber();
-        return view('admin.nasabah.create', compact('accountNumber'));
+        $jurusanList = Nasabah::getJurusanList();
+        $defaultJurusan = array_key_first($jurusanList) ?? 'RPL';
+        $accountNumber = Nasabah::generateAccountNumber($defaultJurusan);
+
+        return view('admin.nasabah.create', compact('jurusanList', 'accountNumber'));
     }
 
     public function store(Request $request)
@@ -28,6 +48,7 @@ class NasabahController extends Controller
         $request->validate([
             'student_number' => 'required|string|max:20|unique:nasabahs,student_number',
             'student_name' => 'required|string|max:150',
+            'jurusan' => 'required|string|max:20',
             'class' => 'required|string|max:20',
             'gender' => 'required|in:L,P',
             'phone_number' => 'nullable|string|max:20',
@@ -38,10 +59,13 @@ class NasabahController extends Controller
 
         DB::beginTransaction();
         try {
+            $accountNumber = Nasabah::generateAccountNumber($request->jurusan);
+
             $nasabah = Nasabah::create([
-                'account_number' => Nasabah::generateAccountNumber(),
+                'account_number' => $accountNumber,
                 'student_number' => $request->student_number,
                 'student_name' => $request->student_name,
+                'jurusan' => strtoupper($request->jurusan),
                 'class' => $request->class,
                 'gender' => $request->gender,
                 'phone_number' => $request->phone_number,
@@ -58,8 +82,8 @@ class NasabahController extends Controller
 
             DB::commit();
 
-            return redirect()->route('admin.nasabah.index')
-                ->with('success', 'Nasabah berhasil ditambahkan. No. Rekening: ' . $nasabah->account_number);
+            return redirect()->route('admin.nasabah.show', $nasabah)
+                ->with('success', "Nasabah berhasil ditambahkan dengan Nomor Rekening: {$nasabah->account_number}. QR Code siap digunakan.");
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->with('error', 'Gagal menambahkan nasabah: ' . $e->getMessage())->withInput();
@@ -69,7 +93,8 @@ class NasabahController extends Controller
     public function edit(Nasabah $nasabah)
     {
         $nasabah->load('customerAccount');
-        return view('admin.nasabah.edit', compact('nasabah'));
+        $jurusanList = Nasabah::getJurusanList();
+        return view('admin.nasabah.edit', compact('nasabah', 'jurusanList'));
     }
 
     public function update(Request $request, Nasabah $nasabah)
@@ -77,6 +102,7 @@ class NasabahController extends Controller
         $request->validate([
             'student_number' => 'required|string|max:20|unique:nasabahs,student_number,' . $nasabah->id,
             'student_name' => 'required|string|max:150',
+            'jurusan' => 'nullable|string|max:20',
             'class' => 'required|string|max:20',
             'gender' => 'required|in:L,P',
             'phone_number' => 'nullable|string|max:20',
@@ -91,6 +117,7 @@ class NasabahController extends Controller
             $nasabahData = [
                 'student_number' => $request->student_number,
                 'student_name' => $request->student_name,
+                'jurusan' => $request->jurusan ? strtoupper($request->jurusan) : $nasabah->jurusan,
                 'class' => $request->class,
                 'gender' => $request->gender,
                 'phone_number' => $request->phone_number,
@@ -133,5 +160,16 @@ class NasabahController extends Controller
             $q->orderByDesc('created_at');
         }]);
         return view('admin.nasabah.show', compact('nasabah'));
+    }
+
+    /**
+     * Mengubah status nasabah antara Aktif dan Nonaktif (menggantikan hapus).
+     */
+    public function toggleStatus(Nasabah $nasabah)
+    {
+        $newStatus = $nasabah->status === 'Aktif' ? 'Nonaktif' : 'Aktif';
+        $nasabah->update(['status' => $newStatus]);
+
+        return back()->with('success', "Status nasabah '{$nasabah->student_name}' ({$nasabah->account_number}) berhasil diubah menjadi {$newStatus}.");
     }
 }

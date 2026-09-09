@@ -2,23 +2,16 @@
 
 @section('title', 'Edit User')
 
-@section('sidebar')
-    <div class="nav-label">Menu Utama</div>
-    <a href="{{ route('admin.dashboard') }}" class="nav-item"><span class="nav-icon">📊</span> Dashboard</a>
-    <a href="{{ route('admin.users.index') }}" class="nav-item active"><span class="nav-icon">👥</span> Manajemen User</a>
-    <a href="{{ route('admin.nasabah.index') }}" class="nav-item"><span class="nav-icon">🎓</span> Manajemen Nasabah</a>
-    <div class="nav-label">Laporan</div>
-    <a href="{{ route('admin.transactions.index') }}" class="nav-item"><span class="nav-icon">💳</span> Data Transaksi</a>
-    <a href="{{ route('admin.journals.index') }}" class="nav-item"><span class="nav-icon">📒</span> Jurnal Akuntansi</a>
-@endsection
-
 @section('content')
     <div class="page-header">
         <div>
             <h1>Edit User: {{ $user->name }}</h1>
-            <div class="breadcrumb">Admin / User / Edit</div>
+            <div class="breadcrumb">Admin / User / Perbarui Data Pegawai</div>
         </div>
-        <a href="{{ route('admin.users.index') }}" class="btn btn-secondary">← Kembali</a>
+        <a href="{{ route('admin.users.index') }}" class="btn btn-secondary">
+            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+            Kembali
+        </a>
     </div>
 
     <div class="card">
@@ -29,18 +22,18 @@
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="username">Username</label>
+                        <label for="username">Username <span style="color:var(--danger);">*</span></label>
                         <input type="text" class="form-control" id="username" name="username" value="{{ old('username', $user->username) }}" required>
                     </div>
                     <div class="form-group">
-                        <label for="name">Nama Lengkap</label>
+                        <label for="name">Nama Lengkap <span style="color:var(--danger);">*</span></label>
                         <input type="text" class="form-control" id="name" name="name" value="{{ old('name', $user->name) }}" required>
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="role">Role</label>
+                        <label for="role">Role / Jabatan <span style="color:var(--danger);">*</span></label>
                         <select class="form-control" id="role" name="role" required>
                             <option value="Administrator" {{ old('role', $user->role) === 'Administrator' ? 'selected' : '' }}>Administrator</option>
                             <option value="Supervisor" {{ old('role', $user->role) === 'Supervisor' ? 'selected' : '' }}>Supervisor</option>
@@ -48,7 +41,7 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="status">Status</label>
+                        <label for="status">Status Akun <span style="color:var(--danger);">*</span></label>
                         <select class="form-control" id="status" name="status" required>
                             <option value="Aktif" {{ old('status', $user->status) === 'Aktif' ? 'selected' : '' }}>Aktif</option>
                             <option value="Nonaktif" {{ old('status', $user->status) === 'Nonaktif' ? 'selected' : '' }}>Nonaktif</option>
@@ -60,16 +53,19 @@
                     <div class="form-group">
                         <label for="password">Password Baru</label>
                         <input type="password" class="form-control" id="password" name="password" placeholder="Kosongkan jika tidak diubah">
-                        <div class="form-hint">Kosongkan jika tidak ingin mengubah password.</div>
+                        <div class="form-hint">Kosongkan jika tidak ingin mengganti password user.</div>
                     </div>
                     <div class="form-group">
-                        <label for="password_confirmation">Konfirmasi Password</label>
+                        <label for="password_confirmation">Konfirmasi Password Baru</label>
                         <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" placeholder="Ulangi password baru">
                     </div>
                 </div>
 
-                <div class="btn-group mt-2">
-                    <button type="submit" class="btn btn-primary" id="btn-update-user">Simpan Perubahan</button>
+                <div class="btn-group mt-3">
+                    <button type="submit" class="btn btn-primary" id="btn-update-user">
+                        <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                        Simpan Perubahan
+                    </button>
                     <a href="{{ route('admin.users.index') }}" class="btn btn-secondary">Batal</a>
                 </div>
             </form>

@@ -2,11 +2,7 @@
 
 @section('title', 'Buku Tabungan Digital')
 
-@section('sidebar')
-    <div class="nav-label">Menu Utama</div>
-    <a href="{{ route('nasabah.dashboard') }}" class="nav-item"><span class="nav-icon">📊</span> Dashboard</a>
-    <a href="{{ route('nasabah.mutasi.index') }}" class="nav-item active"><span class="nav-icon">📖</span> Buku Tabungan</a>
-@endsection
+
 
 @section('content')
     <div class="page-header">

@@ -2,36 +2,27 @@
 
 @section('title', 'Penarikan Tunai')
 
-@section('sidebar')
-    <div class="nav-label">Menu Utama</div>
-    <a href="{{ route('teller.dashboard') }}" class="nav-item"><span class="nav-icon">📊</span> Dashboard</a>
-    <a href="{{ route('teller.nasabah.index') }}" class="nav-item"><span class="nav-icon">🔍</span> Cari Nasabah</a>
-    <div class="nav-label">Transaksi Loket</div>
-    <a href="{{ route('teller.deposit.create') }}" class="nav-item"><span class="nav-icon">📥</span> Setoran Tunai</a>
-    <a href="{{ route('teller.withdrawal.create') }}" class="nav-item active"><span class="nav-icon">📤</span> Penarikan Tunai</a>
-    <div class="nav-label">Laporan & Riwayat</div>
-    <a href="{{ route('teller.transactions.index') }}" class="nav-item"><span class="nav-icon">🧾</span> Riwayat Transaksi</a>
-    <a href="{{ route('teller.reports.index') }}" class="nav-item"><span class="nav-icon">📅</span> Laporan Harian</a>
-@endsection
-
 @section('content')
     <div class="page-header">
         <div>
             <h1>Form Penarikan Tunai</h1>
-            <div class="breadcrumb">Teller / Penarikan</div>
+            <div class="breadcrumb">Loket Teller / Pemrosesan Penarikan Saldo</div>
         </div>
-        <a href="{{ route('teller.nasabah.index') }}" class="btn btn-secondary">← Kembali Cari Nasabah</a>
+        <a href="{{ route('teller.nasabah.index') }}" class="btn btn-secondary">
+            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+            Kembali Cari Nasabah
+        </a>
     </div>
 
     <div class="card" style="max-width: 600px; margin: 0 auto;">
         <div class="card-body">
-            
             @if($nasabah)
                 <div class="info-box mb-3">
-                    <div class="info-row"><span class="label">Nasabah</span><span class="value">{{ $nasabah->student_name }}</span></div>
-                    <div class="info-row"><span class="label">No. Rekening</span><span class="value font-mono">{{ $nasabah->account_number }}</span></div>
-                    <div class="info-row"><span class="label">Saldo Saat Ini</span><span class="value font-mono font-bold">Rp {{ number_format($nasabah->balance, 0, ',', '.') }}</span></div>
-                    <div class="info-row"><span class="label text-danger">Saldo Tersedia (Dikurangi Rp 10.000)</span><span class="value font-mono text-danger">Rp {{ number_format(max(0, $nasabah->balance - 10000), 0, ',', '.') }}</span></div>
+                    <div class="info-row"><span class="label">Nama Nasabah</span><span class="value">{{ $nasabah->student_name }}</span></div>
+                    <div class="info-row"><span class="label">No. Rekening</span><span class="value font-mono" style="color:var(--primary); font-weight:700;">{{ $nasabah->account_number }}</span></div>
+                    <div class="info-row"><span class="label">Jurusan / Kelas</span><span class="value">{{ $nasabah->class }} {{ $nasabah->jurusan ? '(' . $nasabah->jurusan . ')' : '' }}</span></div>
+                    <div class="info-row"><span class="label">Saldo Saat Ini</span><span class="value font-mono font-bold" style="color:var(--primary);">Rp {{ number_format($nasabah->balance, 0, ',', '.') }}</span></div>
+                    <div class="info-row"><span class="label" style="color:var(--danger);">Saldo Maksimal Ditarik (Saldo Mengendap Rp 10.000)</span><span class="value font-mono font-bold" style="color:var(--danger);">Rp {{ number_format(max(0, $nasabah->balance - 10000), 0, ',', '.') }}</span></div>
                 </div>
             @endif
 
@@ -40,12 +31,12 @@
                 
                 @if(!$nasabah)
                     <div class="form-group">
-                        <label for="nasabah_id">Pilih Nasabah</label>
+                        <label for="nasabah_id">Pilih Rekening Nasabah <span style="color:var(--danger);">*</span></label>
                         <select name="nasabah_id" id="nasabah_id" class="form-control" required>
                             <option value="">-- Pilih Nasabah --</option>
                             @foreach($nasabahs as $n)
                                 <option value="{{ $n->id }}" {{ old('nasabah_id') == $n->id ? 'selected' : '' }}>
-                                    {{ $n->account_number }} - {{ $n->student_name }}
+                                    {{ $n->account_number }} - {{ $n->student_name }} ({{ $n->class }})
                                 </option>
                             @endforeach
                         </select>
@@ -55,24 +46,30 @@
                 @endif
 
                 <div class="form-group">
-                    <label for="amount">Nominal Penarikan (Rp)</label>
-                    <input type="number" class="form-control" id="amount" name="amount" value="{{ old('amount') }}" min="1" step="1" required style="font-size: 1.5rem; font-weight: bold; font-family: monospace;">
+                    <label for="amount">Nominal Penarikan (Rp) <span style="color:var(--danger);">*</span></label>
+                    <input type="number" class="form-control" id="amount" name="amount" value="{{ old('amount') }}" min="1" step="1" placeholder="Masukkan jumlah penarikan" required style="font-size: 1.4rem; font-weight: bold; font-family: monospace;">
                 </div>
 
                 <div class="form-group">
-                    <label for="description">Keterangan (Opsional)</label>
-                    <input type="text" class="form-control" id="description" name="description" value="{{ old('description') }}">
+                    <label for="description">Keterangan Penarikan (Opsional)</label>
+                    <input type="text" class="form-control" id="description" name="description" value="{{ old('description') }}" placeholder="Contoh: Pembayaran kegiatan, keperluan pribadi">
                 </div>
 
                 <hr style="border:none; border-top:1px dashed var(--border); margin:1.5rem 0;">
 
-                <div class="form-group" style="background: var(--bg-body); padding: 1rem; border-radius: var(--radius-sm); border: 1px solid var(--danger-light);">
-                    <label for="security_pin" class="text-danger">🔐 Otorisasi Nasabah</label>
-                    <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.5rem;">Silakan minta nasabah untuk memasukkan 6 digit PIN keamanan.</p>
-                    <input type="password" class="form-control" id="security_pin" name="security_pin" placeholder="PIN 6 Digit" maxlength="6" required style="text-align: center; letter-spacing: 0.5rem; font-size: 1.5rem;">
+                <div class="form-group" style="background: #fff1f2; padding: 1.25rem; border-radius: var(--radius); border: 1px solid #fecdd3;">
+                    <label for="security_pin" style="color:#be123c; font-weight:700; display:flex; align-items:center; gap:0.4rem;">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                        Otorisasi PIN Keamanan Nasabah
+                    </label>
+                    <p style="font-size: 0.78rem; color: #9f1239; margin-bottom: 0.75rem;">Minta nasabah untuk memasukkan 6 digit PIN secara mandiri.</p>
+                    <input type="password" class="form-control" id="security_pin" name="security_pin" placeholder="••••••" maxlength="6" pattern="[0-9]{6}" inputmode="numeric" required style="text-align: center; letter-spacing: 0.6rem; font-size: 1.5rem; background:white;">
                 </div>
 
-                <button type="submit" class="btn btn-danger btn-block btn-lg mt-2">Proses Penarikan</button>
+                <button type="submit" class="btn btn-danger btn-block btn-lg mt-3" style="width:100%; justify-content:center;">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 13l-5 5m0 0l-5-5m5 5V6"/></svg>
+                    Proses Penarikan Tunai
+                </button>
             </form>
         </div>
     </div>

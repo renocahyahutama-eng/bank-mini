@@ -8,10 +8,21 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::orderByDesc('created_at')->get();
-        return view('admin.users.index', compact('users'));
+        $query = User::query();
+
+        if ($search = $request->input('search')) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('username', 'like', "%{$search}%")
+                  ->orWhere('role', 'like', "%{$search}%");
+            });
+        }
+
+        $users = $query->orderByDesc('created_at')->paginate(15)->withQueryString();
+
+        return view('admin.users.index', compact('users', 'search'));
     }
 
     public function create()
@@ -71,20 +82,18 @@ class UserController extends Controller
         return redirect()->route('admin.users.index')->with('success', 'User berhasil diperbarui.');
     }
 
-    public function destroy(User $user)
+    /**
+     * Mengubah status user antara Aktif dan Nonaktif (menggantikan fitur hapus).
+     */
+    public function toggleStatus(User $user)
     {
-        // Prevent self-deletion
         if ($user->id === auth()->id()) {
-            return back()->with('error', 'Tidak dapat menghapus akun sendiri.');
+            return back()->with('error', 'Tidak dapat mengubah status akun sendiri.');
         }
 
-        // Check if user has transactions
-        if ($user->transactions()->exists()) {
-            return back()->with('error', 'User tidak dapat dihapus karena memiliki riwayat transaksi.');
-        }
+        $newStatus = $user->status === 'Aktif' ? 'Nonaktif' : 'Aktif';
+        $user->update(['status' => $newStatus]);
 
-        $user->delete();
-
-        return redirect()->route('admin.users.index')->with('success', 'User berhasil dihapus.');
+        return back()->with('success', "Status user '{$user->name}' berhasil diubah menjadi {$newStatus}.");
     }
 }

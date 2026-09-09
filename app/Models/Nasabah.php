@@ -13,6 +13,7 @@ class Nasabah extends Model
         'student_number',
         'student_name',
         'class',
+        'jurusan',
         'gender',
         'phone_number',
         'security_pin',
@@ -51,12 +52,32 @@ class Nasabah extends Model
     }
 
     /**
-     * Generate a new account number: BM-{year}-{sequential}
+     * Daftar jurusan yang tersedia.
      */
-    public static function generateAccountNumber(): string
+    public static function getJurusanList(): array
     {
+        return [
+            'RPL' => 'RPL - Rekayasa Perangkat Lunak',
+            'TKJ' => 'TKJ - Teknik Komputer & Jaringan',
+            'DKV' => 'DKV - Desain Komunikasi Visual',
+            'MM' => 'MM - Multimedia',
+            'OTKP' => 'OTKP - Otomatisasi Tata Kelola Perkantoran',
+            'AKL' => 'AKL - Akuntansi & Keuangan Lembaga',
+            'BDP' => 'BDP - Bisnis Daring & Pemasaran',
+            'TB' => 'TB - Tata Busana',
+            'TSM' => 'TSM - Teknik Sepeda Motor',
+        ];
+    }
+
+    /**
+     * Generate a new account number: {JURUSAN}-{year}-{sequential}
+     * Contoh: RPL-2026-0001
+     */
+    public static function generateAccountNumber(string $jurusan = 'RPL'): string
+    {
+        $jurusan = strtoupper(trim($jurusan ?: 'RPL'));
         $year = date('Y');
-        $prefix = 'BM-' . $year . '-';
+        $prefix = $jurusan . '-' . $year . '-';
 
         $lastNasabah = self::where('account_number', 'like', $prefix . '%')
             ->orderByDesc('account_number')

@@ -28,11 +28,13 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::prefix('admin')->name('admin.')->middleware('role:Administrator')->group(function () {
     Route::get('/dashboard', [Admin\DashboardController::class, 'index'])->name('dashboard');
 
-    // User Management
-    Route::resource('users', Admin\UserController::class)->except(['show']);
+    // User Management (tanpa hapus, toggle status)
+    Route::patch('/users/{user}/toggle-status', [Admin\UserController::class, 'toggleStatus'])->name('users.toggle-status');
+    Route::resource('users', Admin\UserController::class)->except(['show', 'destroy']);
 
-    // Nasabah Management
-    Route::resource('nasabah', Admin\NasabahController::class);
+    // Nasabah Management (tanpa hapus, toggle status)
+    Route::patch('/nasabah/{nasabah}/toggle-status', [Admin\NasabahController::class, 'toggleStatus'])->name('nasabah.toggle-status');
+    Route::resource('nasabah', Admin\NasabahController::class)->except(['destroy']);
 
     // Transactions (read-only)
     Route::get('/transactions', [Admin\TransactionController::class, 'index'])->name('transactions.index');
@@ -62,8 +64,9 @@ Route::prefix('teller')->name('teller.')->middleware('role:Teller')->group(funct
     Route::get('/withdrawal', [Teller\WithdrawalController::class, 'create'])->name('withdrawal.create');
     Route::post('/withdrawal', [Teller\WithdrawalController::class, 'store'])->name('withdrawal.store');
 
-    // Transaction history
+    // Transaction history & Receipt
     Route::get('/transactions', [Teller\TransactionController::class, 'index'])->name('transactions.index');
+    Route::get('/transactions/{transaction}/receipt', [Teller\TransactionController::class, 'receipt'])->name('transactions.receipt');
 
     // Daily Reports
     Route::get('/reports', [Teller\DailyReportController::class, 'index'])->name('reports.index');

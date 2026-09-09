@@ -2,25 +2,16 @@
 
 @section('title', 'Laporan Harian')
 
-@section('sidebar')
-    <div class="nav-label">Menu Utama</div>
-    <a href="{{ route('teller.dashboard') }}" class="nav-item"><span class="nav-icon">📊</span> Dashboard</a>
-    <a href="{{ route('teller.nasabah.index') }}" class="nav-item"><span class="nav-icon">🔍</span> Cari Nasabah</a>
-    <div class="nav-label">Transaksi Loket</div>
-    <a href="{{ route('teller.deposit.create') }}" class="nav-item"><span class="nav-icon">📥</span> Setoran Tunai</a>
-    <a href="{{ route('teller.withdrawal.create') }}" class="nav-item"><span class="nav-icon">📤</span> Penarikan Tunai</a>
-    <div class="nav-label">Laporan & Riwayat</div>
-    <a href="{{ route('teller.transactions.index') }}" class="nav-item"><span class="nav-icon">🧾</span> Riwayat Transaksi</a>
-    <a href="{{ route('teller.reports.index') }}" class="nav-item active"><span class="nav-icon">📅</span> Laporan Harian</a>
-@endsection
-
 @section('content')
     <div class="page-header">
         <div>
             <h1>Laporan Harian (Penutupan Kas)</h1>
-            <div class="breadcrumb">Teller / Laporan Harian</div>
+            <div class="breadcrumb">Loket Teller / Rekapitulasi Kas Harian</div>
         </div>
-        <a href="{{ route('teller.reports.create') }}" class="btn btn-primary">Buat Laporan Hari Ini</a>
+        <a href="{{ route('teller.reports.create') }}" class="btn btn-primary">
+            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+            Buat Laporan Hari Ini
+        </a>
     </div>
 
     <div class="card">
@@ -33,17 +24,17 @@
                         <th>Total Setoran</th>
                         <th>Total Penarikan</th>
                         <th>Saldo Akhir (Kas Fisik)</th>
-                        <th>Status</th>
-                        <th>Aksi</th>
+                        <th>Status Verifikasi</th>
+                        <th style="text-align:center;">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
                     @forelse($reports as $report)
                         <tr>
-                            <td>{{ $report->report_date->format('d/m/Y') }}</td>
+                            <td style="font-weight:600;">{{ $report->report_date->format('d/m/Y') }}</td>
                             <td class="font-mono">Rp {{ number_format($report->opening_balance, 0, ',', '.') }}</td>
-                            <td class="font-mono text-success">Rp {{ number_format($report->total_deposit, 0, ',', '.') }}</td>
-                            <td class="font-mono text-danger">Rp {{ number_format($report->total_withdrawal, 0, ',', '.') }}</td>
+                            <td class="font-mono font-bold text-success">+ Rp {{ number_format($report->total_deposit, 0, ',', '.') }}</td>
+                            <td class="font-mono font-bold text-danger">- Rp {{ number_format($report->total_withdrawal, 0, ',', '.') }}</td>
                             <td class="font-mono font-bold text-primary">Rp {{ number_format($report->closing_balance, 0, ',', '.') }}</td>
                             <td>
                                 @if($report->status === 'Draft')
@@ -56,13 +47,15 @@
                                     <span class="badge badge-danger">Ditolak</span>
                                 @endif
                             </td>
-                            <td>
-                                <a href="{{ route('teller.reports.show', $report) }}" class="btn btn-sm btn-secondary">Lihat Detail</a>
+                            <td style="text-align:center;">
+                                <a href="{{ route('teller.reports.show', $report) }}" class="btn btn-sm btn-secondary">
+                                    Lihat Detail
+                                </a>
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="text-center text-muted" style="padding:2rem">Belum ada laporan harian.</td>
+                            <td colspan="7" class="text-center text-muted" style="padding:2.5rem 1rem;">Belum ada laporan harian yang dibuat.</td>
                         </tr>
                     @endforelse
                 </tbody>

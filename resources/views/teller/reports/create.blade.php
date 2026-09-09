@@ -2,31 +2,22 @@
 
 @section('title', 'Buat Laporan Harian')
 
-@section('sidebar')
-    <div class="nav-label">Menu Utama</div>
-    <a href="{{ route('teller.dashboard') }}" class="nav-item"><span class="nav-icon">📊</span> Dashboard</a>
-    <a href="{{ route('teller.nasabah.index') }}" class="nav-item"><span class="nav-icon">🔍</span> Cari Nasabah</a>
-    <div class="nav-label">Transaksi Loket</div>
-    <a href="{{ route('teller.deposit.create') }}" class="nav-item"><span class="nav-icon">📥</span> Setoran Tunai</a>
-    <a href="{{ route('teller.withdrawal.create') }}" class="nav-item"><span class="nav-icon">📤</span> Penarikan Tunai</a>
-    <div class="nav-label">Laporan & Riwayat</div>
-    <a href="{{ route('teller.transactions.index') }}" class="nav-item"><span class="nav-icon">🧾</span> Riwayat Transaksi</a>
-    <a href="{{ route('teller.reports.index') }}" class="nav-item active"><span class="nav-icon">📅</span> Laporan Harian</a>
-@endsection
-
 @section('content')
     <div class="page-header">
         <div>
             <h1>Penutupan Kas ({{ date('d/m/Y') }})</h1>
-            <div class="breadcrumb">Teller / Laporan Harian / Buat Draft</div>
+            <div class="breadcrumb">Loket Teller / Rekapitulasi Kas Tutup Hari</div>
         </div>
-        <a href="{{ route('teller.reports.index') }}" class="btn btn-secondary">← Kembali</a>
+        <a href="{{ route('teller.reports.index') }}" class="btn btn-secondary">
+            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+            Kembali
+        </a>
     </div>
 
     <div class="card" style="max-width: 700px; margin: 0 auto;">
         <div class="card-body">
             <div class="alert alert-info">
-                ℹ Sistem telah menghitung mutasi transaksi hari ini. Pastikan hitungan sistem sesuai dengan uang fisik di laci Anda.
+                Sistem telah merekap mutasi transaksi loket Anda hari ini. Pastikan saldo akhir sistem ini sama persis dengan uang fisik kas yang ada.
             </div>
 
             <div class="report-summary mt-3">
@@ -36,11 +27,11 @@
                 </div>
                 <div class="report-summary-item">
                     <div class="rs-label">Total Setoran (+)</div>
-                    <div class="rs-value deposit font-mono">Rp {{ number_format($todayDeposits, 0, ',', '.') }}</div>
+                    <div class="rs-value deposit font-mono" style="color:var(--success);">+ Rp {{ number_format($todayDeposits, 0, ',', '.') }}</div>
                 </div>
                 <div class="report-summary-item">
                     <div class="rs-label">Total Penarikan (-)</div>
-                    <div class="rs-value withdrawal font-mono">Rp {{ number_format($todayWithdrawals, 0, ',', '.') }}</div>
+                    <div class="rs-value withdrawal font-mono" style="color:var(--danger);">- Rp {{ number_format($todayWithdrawals, 0, ',', '.') }}</div>
                 </div>
             </div>
 
@@ -50,12 +41,15 @@
             </div>
 
             <div class="alert alert-warning">
-                ⚠ <strong>Peringatan!</strong> Draft laporan akan dicatat pada sistem. Setelah laporan dikirim (Submitted), Anda tidak bisa lagi melayani transaksi setoran/penarikan untuk hari ini hingga laporan diperiksa oleh Supervisor.
+                <strong>Catatan Penting:</strong> Setelah laporan dikirim ke Supervisor (Submitted), loket ditutup untuk hari ini hingga disetujui.
             </div>
 
             <form action="{{ route('teller.reports.store') }}" method="POST">
                 @csrf
-                <button type="submit" class="btn btn-primary btn-block btn-lg mt-2" onclick="return confirm('Simpan draft laporan penutupan kas hari ini?')">Simpan Draft Laporan</button>
+                <button type="submit" class="btn btn-primary btn-block btn-lg mt-3" style="width:100%; justify-content:center;" onclick="return confirm('Simpan draft laporan penutupan kas hari ini?')">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                    Simpan Draft Laporan Penutupan Kas
+                </button>
             </form>
         </div>
     </div>
