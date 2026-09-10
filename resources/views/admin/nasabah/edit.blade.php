@@ -41,7 +41,6 @@
     <div class="page-header">
         <div>
             <h1>Edit Nasabah: {{ $nasabah->student_name }}</h1>
-            <div class="breadcrumb">Admin / Nasabah / Perbarui Data</div>
         </div>
         <div style="display:flex; gap:0.5rem;">
             <a href="{{ route('admin.nasabah.show', $nasabah) }}" class="btn btn-secondary">

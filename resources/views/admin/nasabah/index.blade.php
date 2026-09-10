@@ -41,7 +41,6 @@
     <div class="page-header">
         <div>
             <h1>Manajemen Nasabah</h1>
-            <div class="breadcrumb">Admin / Kelola Akun Rekening Siswa</div>
         </div>
         <a href="{{ route('admin.nasabah.create') }}" class="btn btn-primary" id="btn-add-nasabah">
             <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>

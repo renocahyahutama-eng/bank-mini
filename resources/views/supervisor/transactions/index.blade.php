@@ -8,7 +8,6 @@
     <div class="page-header">
         <div>
             <h1>Data Transaksi</h1>
-            <div class="breadcrumb">Supervisor / Transaksi</div>
         </div>
     </div>
 

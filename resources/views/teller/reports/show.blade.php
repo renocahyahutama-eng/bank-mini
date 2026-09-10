@@ -6,7 +6,6 @@
     <div class="page-header">
         <div>
             <h1>Detail Laporan Harian ({{ $report->report_date->format('d/m/Y') }})</h1>
-            <div class="breadcrumb">Loket Teller / Rekapitulasi Kas / Detail</div>
         </div>
         <a href="{{ route('teller.reports.index') }}" class="btn btn-secondary">
             <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>

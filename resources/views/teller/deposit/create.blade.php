@@ -6,7 +6,6 @@
     <div class="page-header">
         <div>
             <h1>Form Setoran Tunai</h1>
-            <div class="breadcrumb">Loket Teller / Penerimaan Setoran Tunai</div>
         </div>
         <a href="{{ route('teller.nasabah.index') }}" class="btn btn-secondary">
             <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
@@ -32,7 +31,7 @@
                     <div class="form-group">
                         <label for="nasabah_id">Pilih Nasabah <span style="color:var(--danger);">*</span></label>
                         <select name="nasabah_id" id="nasabah_id" class="form-control" required>
-                            <option value="">-- Pilih Rekening Nasabah --</option>
+                            <option value="">Pilih Rekening Nasabah</option>
                             @foreach($nasabahs as $n)
                                 <option value="{{ $n->id }}" {{ old('nasabah_id') == $n->id ? 'selected' : '' }}>
                                     {{ $n->account_number }} - {{ $n->student_name }} ({{ $n->class }})

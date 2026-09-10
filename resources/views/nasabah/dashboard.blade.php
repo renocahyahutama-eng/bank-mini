@@ -8,7 +8,7 @@
     <div class="page-header">
         <div>
             <h1>Dashboard Nasabah</h1>
-            <div class="breadcrumb">Selamat datang, {{ $nasabah->student_name }}!</div>
+            <div class="breadcrumb">{{ $nasabah->student_name }}</div>
         </div>
     </div>
 

@@ -6,7 +6,6 @@
     <div class="page-header">
         <div>
             <h1>Jurnal Akuntansi</h1>
-            <div class="breadcrumb">Admin / Catatan Pembukuan Keuangan Bank</div>
         </div>
     </div>
 

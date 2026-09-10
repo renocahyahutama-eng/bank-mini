@@ -48,7 +48,6 @@
     <div class="page-header">
         <div>
             <h1>Riwayat Transaksi (Anda)</h1>
-            <div class="breadcrumb">Daftar transaksi loket yang Anda proses & cetak struk digital</div>
         </div>
     </div>
 

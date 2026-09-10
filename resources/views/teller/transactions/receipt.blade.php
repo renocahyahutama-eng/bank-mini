@@ -269,7 +269,6 @@
         <div class="receipt-header">
             <div class="bank-badge">E-Teller Bank Mini</div>
             <h1 class="bank-title">BANK MINI SEKOLAH</h1>
-            <p class="bank-subtitle">Bukti Transaksi Loket Teller Resmi</p>
             <div>
                 <span class="tx-type-badge {{ $transaction->transaction_type === 'Deposit' ? 'tx-type-deposit' : 'tx-type-withdrawal' }}">
                     {{ $transaction->transaction_type === 'Deposit' ? 'Setoran Tunai' : 'Penarikan Tunai' }}
@@ -332,7 +331,6 @@
 
         <div class="receipt-footer">
             <div id="receipt-qrcode" style="display:flex; justify-content:center; margin:0.85rem 0;"></div>
-            <p><strong>Terima kasih atas transaksi Anda!</strong></p>
             <p style="margin-top:0.25rem;">Struk digital ini adalah bukti transaksi yang sah dan diakui secara resmi oleh Bank Mini Sekolah.</p>
         </div>
     </div>

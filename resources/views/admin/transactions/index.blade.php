@@ -41,7 +41,6 @@
     <div class="page-header">
         <div>
             <h1>Data Seluruh Transaksi</h1>
-            <div class="breadcrumb">Admin / Laporan Transaksi</div>
         </div>
     </div>
 

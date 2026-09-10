@@ -6,7 +6,6 @@
     <div class="page-header">
         <div>
             <h1>Validasi Laporan Kas Teller</h1>
-            <div class="breadcrumb">Supervisor / Pemeriksaan Rekapitulasi Kas Harian</div>
         </div>
     </div>
 

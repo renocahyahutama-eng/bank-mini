@@ -8,7 +8,6 @@
     <div class="page-header">
         <div>
             <h1>Review Laporan Penutupan Kas</h1>
-            <div class="breadcrumb">Supervisor / Validasi / Detail</div>
         </div>
         <a href="{{ route('supervisor.reports.index') }}" class="btn btn-secondary">← Kembali</a>
     </div>

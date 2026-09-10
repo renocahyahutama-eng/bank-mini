@@ -6,7 +6,6 @@
     <div class="page-header">
         <div>
             <h1>Tambah User Baru</h1>
-            <div class="breadcrumb">Admin / User / Pendaftaran Pegawai</div>
         </div>
         <a href="{{ route('admin.users.index') }}" class="btn btn-secondary">
             <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
@@ -34,7 +33,7 @@
                     <div class="form-group">
                         <label for="role">Role / Jabatan <span style="color:var(--danger);">*</span></label>
                         <select class="form-control" id="role" name="role" required>
-                            <option value="">-- Pilih Role --</option>
+                            <option value="">Pilih Role</option>
                             <option value="Administrator" {{ old('role') === 'Administrator' ? 'selected' : '' }}>Administrator</option>
                             <option value="Supervisor" {{ old('role') === 'Supervisor' ? 'selected' : '' }}>Supervisor</option>
                             <option value="Teller" {{ old('role') === 'Teller' ? 'selected' : '' }}>Teller</option>

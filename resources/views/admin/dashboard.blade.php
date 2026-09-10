@@ -41,10 +41,9 @@
     <div class="page-header">
         <div>
             <h1>Dashboard Administrator</h1>
-            <div class="breadcrumb">Ringkasan statistik & keuangan bank hari ini</div>
         </div>
         <div style="font-size:0.85rem; color:var(--text-secondary); background:white; padding:0.5rem 0.85rem; border:1px solid var(--border); border-radius:var(--radius-sm);">
-            📅 {{ now()->translatedFormat('l, d F Y') }}
+         {{ now()->translatedFormat('l, d F Y') }}
         </div>
     </div>
 
@@ -58,7 +57,6 @@
             <div class="stat-content">
                 <div class="stat-label">Total Saldo Bank</div>
                 <div class="stat-value" style="font-size:1.35rem; color:var(--primary);">Rp {{ number_format($totalBankBalance, 0, ',', '.') }}</div>
-                <div class="stat-desc">Dana seluruh nasabah saat ini</div>
             </div>
         </div>
 
@@ -72,7 +70,6 @@
                 <div class="stat-value" style="font-size:1.35rem; color:{{ $dailyNetCash >= 0 ? 'var(--success)' : 'var(--danger)' }};">
                     {{ $dailyNetCash >= 0 ? '+' : '' }}Rp {{ number_format($dailyNetCash, 0, ',', '.') }}
                 </div>
-                <div class="stat-desc">Setoran minus penarikan hari ini</div>
             </div>
         </div>
 
@@ -84,7 +81,6 @@
             <div class="stat-content">
                 <div class="stat-label">Rekening Aktif</div>
                 <div class="stat-value">{{ $activeAccounts }}</div>
-                <div class="stat-desc">Dari total {{ $totalNasabah }} nasabah</div>
             </div>
         </div>
 
@@ -96,7 +92,6 @@
             <div class="stat-content">
                 <div class="stat-label">Rekening Nonaktif</div>
                 <div class="stat-value">{{ $inactiveAccounts }}</div>
-                <div class="stat-desc">Nasabah ditangguhkan</div>
             </div>
         </div>
     </div>
@@ -110,7 +105,6 @@
             <div class="stat-content">
                 <div class="stat-label">Setoran Hari Ini</div>
                 <div class="stat-value" style="font-size:1.15rem;">Rp {{ number_format($todayDeposits, 0, ',', '.') }}</div>
-                <div class="stat-desc">Arus dana masuk</div>
             </div>
         </div>
 
@@ -121,7 +115,6 @@
             <div class="stat-content">
                 <div class="stat-label">Penarikan Hari Ini</div>
                 <div class="stat-value" style="font-size:1.15rem;">Rp {{ number_format($todayWithdrawals, 0, ',', '.') }}</div>
-                <div class="stat-desc">Arus dana keluar</div>
             </div>
         </div>
 
@@ -132,7 +125,6 @@
             <div class="stat-content">
                 <div class="stat-label">Pegawai Bank</div>
                 <div class="stat-value">{{ $totalUsers }}</div>
-                <div class="stat-desc">User sistem terdaftar</div>
             </div>
         </div>
     </div>
@@ -146,7 +138,6 @@
                     Transaksi Hari Ini
                     <span class="badge badge-info" style="font-size:0.75rem;">{{ $recentTransactions->count() }} transaksi</span>
                 </h3>
-                <div style="font-size:0.75rem; color:var(--text-muted); margin-top:0.25rem;">Hanya menampilkan transaksi yang berlangsung hari ini</div>
             </div>
             <a href="{{ route('admin.transactions.index') }}" class="btn btn-secondary btn-sm" id="btn-view-all-tx">
                 Lihat Semua Transaksi
@@ -193,9 +184,6 @@
                                     <svg width="32" height="32" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="margin:0 auto;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
                                 </div>
                                 <div>Belum ada transaksi pada hari ini.</div>
-                                <div style="font-size:0.78rem; margin-top:0.35rem;">
-                                    <a href="{{ route('admin.transactions.index') }}" style="color:var(--primary); font-weight:600;">Klik di sini untuk melihat semua riwayat transaksi &rarr;</a>
-                                </div>
                             </td>
                         </tr>
                     @endforelse

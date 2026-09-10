@@ -6,7 +6,6 @@
     <div class="page-header">
         <div>
             <h1>Form Penarikan Tunai</h1>
-            <div class="breadcrumb">Loket Teller / Pemrosesan Penarikan Saldo</div>
         </div>
         <a href="{{ route('teller.nasabah.index') }}" class="btn btn-secondary">
             <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
@@ -33,7 +32,7 @@
                     <div class="form-group">
                         <label for="nasabah_id">Pilih Rekening Nasabah <span style="color:var(--danger);">*</span></label>
                         <select name="nasabah_id" id="nasabah_id" class="form-control" required>
-                            <option value="">-- Pilih Nasabah --</option>
+                            <option value="">Pilih Nasabah</option>
                             @foreach($nasabahs as $n)
                                 <option value="{{ $n->id }}" {{ old('nasabah_id') == $n->id ? 'selected' : '' }}>
                                     {{ $n->account_number }} - {{ $n->student_name }} ({{ $n->class }})
@@ -62,7 +61,6 @@
                         <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
                         Otorisasi PIN Keamanan Nasabah
                     </label>
-                    <p style="font-size: 0.78rem; color: #9f1239; margin-bottom: 0.75rem;">Minta nasabah untuk memasukkan 6 digit PIN secara mandiri.</p>
                     <input type="password" class="form-control" id="security_pin" name="security_pin" placeholder="••••••" maxlength="6" pattern="[0-9]{6}" inputmode="numeric" required style="text-align: center; letter-spacing: 0.6rem; font-size: 1.5rem; background:white;">
                 </div>
 

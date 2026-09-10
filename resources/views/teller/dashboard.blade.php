@@ -48,7 +48,7 @@
     <div class="page-header">
         <div>
             <h1>Dashboard Loket Teller</h1>
-            <div class="breadcrumb">Selamat bertugas, {{ auth()->user()->name }}!</div>
+            <div class="breadcrumb">{{ auth()->user()->name }}</div>
         </div>
         <div style="display:flex; gap:0.5rem; align-items:center;">
             @if(!$todayReport)
@@ -72,7 +72,6 @@
             <div class="stat-content">
                 <div class="stat-label">Transaksi Hari Ini</div>
                 <div class="stat-value">{{ $todayTransactions }}</div>
-                <div class="stat-desc">Diproses oleh Anda</div>
             </div>
         </div>
         <div class="stat-card">
@@ -82,7 +81,6 @@
             <div class="stat-content">
                 <div class="stat-label">Setoran Masuk Hari Ini</div>
                 <div class="stat-value" style="color:var(--success);">Rp {{ number_format($todayDeposits, 0, ',', '.') }}</div>
-                <div class="stat-desc">Total dana diterima</div>
             </div>
         </div>
         <div class="stat-card">
@@ -92,7 +90,6 @@
             <div class="stat-content">
                 <div class="stat-label">Penarikan Keluar Hari Ini</div>
                 <div class="stat-value" style="color:var(--danger);">Rp {{ number_format($todayWithdrawals, 0, ',', '.') }}</div>
-                <div class="stat-desc">Total dana ditarik</div>
             </div>
         </div>
     </div>
@@ -104,7 +101,6 @@
                     <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                     Transaksi Hari Ini (Anda)
                 </h3>
-                <div style="font-size:0.75rem; color:var(--text-muted); margin-top:0.25rem;">Hanya menampilkan transaksi yang Anda proses hari ini</div>
             </div>
             <a href="{{ route('teller.transactions.index') }}" class="btn btn-secondary btn-sm" id="btn-view-all-teller-tx">
                 Lihat Semua Transaksi

@@ -24,7 +24,6 @@
                 </div>
                 <div class="brand-text">
                     <h2>Bank Mini</h2>
-                    <span>Teller Panel</span>
                 </div>
             </div>
 

@@ -41,7 +41,7 @@
     <div class="page-header">
         <div>
             <h1>Detail Profil Nasabah</h1>
-            <div class="breadcrumb">Admin / Nasabah / {{ $nasabah->student_name }}</div>
+            <div class="breadcrumb">{{ $nasabah->student_name }}</div>
         </div>
         <div class="btn-group">
             <a href="{{ route('admin.nasabah.edit', $nasabah) }}" class="btn btn-secondary">

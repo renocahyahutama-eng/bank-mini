@@ -8,7 +8,6 @@
     <div class="page-header">
         <div>
             <h1>Buku Tabungan Digital</h1>
-            <div class="breadcrumb">Nasabah / Mutasi Rekening</div>
         </div>
     </div>
 

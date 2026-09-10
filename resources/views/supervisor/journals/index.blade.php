@@ -8,7 +8,6 @@
     <div class="page-header">
         <div>
             <h1>Jurnal Akuntansi (Audit Trail)</h1>
-            <div class="breadcrumb">Supervisor / Jurnal Akuntansi</div>
         </div>
     </div>
 
