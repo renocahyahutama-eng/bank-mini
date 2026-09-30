@@ -76,7 +76,7 @@
                     <div class="form-group">
                         <label for="jurusan">Jurusan / Program Keahlian</label>
                         <select class="form-control" id="jurusan" name="jurusan">
-                            <option value="">-- Pilih Jurusan --</option>
+                            <option value="">Pilih Jurusan</option>
                             @foreach($jurusanList as $code => $label)
                                 <option value="{{ $code }}" {{ old('jurusan', $nasabah->jurusan) === $code ? 'selected' : '' }}>
                                     {{ $label }}

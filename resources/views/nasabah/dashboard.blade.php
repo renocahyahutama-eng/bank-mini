@@ -15,7 +15,7 @@
     <div class="balance-display mb-3">
         <div class="balance-label">Total Saldo Tersedia</div>
         <div class="balance-amount">Rp {{ number_format($nasabah->balance, 0, ',', '.') }}</div>
-        <div class="balance-account">No. Rekening: {{ $nasabah->account_number }}</div>
+        <div class="balance-account">{{ $nasabah->account_number }}</div>
     </div>
 
     <div class="card mb-3">

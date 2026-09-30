@@ -32,7 +32,7 @@
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="role">Role / Jabatan <span style="color:var(--danger);">*</span></label>
+                        <label for="role">Role<span style="color:var(--danger);">*</span></label>
                         <select class="form-control" id="role" name="role" required>
                             <option value="Administrator" {{ old('role', $user->role) === 'Administrator' ? 'selected' : '' }}>Administrator</option>
                             <option value="Supervisor" {{ old('role', $user->role) === 'Supervisor' ? 'selected' : '' }}>Supervisor</option>

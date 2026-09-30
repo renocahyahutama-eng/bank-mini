@@ -31,7 +31,7 @@
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="role">Role / Jabatan <span style="color:var(--danger);">*</span></label>
+                        <label for="role">Role<span style="color:var(--danger);">*</span></label>
                         <select class="form-control" id="role" name="role" required>
                             <option value="">Pilih Role</option>
                             <option value="Administrator" {{ old('role') === 'Administrator' ? 'selected' : '' }}>Administrator</option>

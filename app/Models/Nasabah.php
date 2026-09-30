@@ -60,12 +60,11 @@ class Nasabah extends Model
             'RPL' => 'RPL - Rekayasa Perangkat Lunak',
             'TKJ' => 'TKJ - Teknik Komputer & Jaringan',
             'DKV' => 'DKV - Desain Komunikasi Visual',
-            'MM' => 'MM - Multimedia',
-            'OTKP' => 'OTKP - Otomatisasi Tata Kelola Perkantoran',
             'AKL' => 'AKL - Akuntansi & Keuangan Lembaga',
-            'BDP' => 'BDP - Bisnis Daring & Pemasaran',
-            'TB' => 'TB - Tata Busana',
-            'TSM' => 'TSM - Teknik Sepeda Motor',
+            'BR' => 'BR - Bisnis Ritel',
+            'BD' => 'BD - Bisnis Digital',
+            'MP' => 'MP - Manajemen Perkantoran',
+            'LPS' => 'LPS - Layanan Perbankan Syariah',
         ];
     }
 

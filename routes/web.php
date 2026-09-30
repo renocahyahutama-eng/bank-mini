@@ -7,11 +7,7 @@ use App\Http\Controllers\Supervisor;
 use App\Http\Controllers\Nasabah;
 use Illuminate\Support\Facades\Route;
 
-/*
-|--------------------------------------------------------------------------
-| Authentication Routes
-|--------------------------------------------------------------------------
-*/
+/*Authentication Routes*/
 
 Route::get('/', fn () => redirect()->route('login'));
 
@@ -19,11 +15,7 @@ Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.post');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-/*
-|--------------------------------------------------------------------------
-| Administrator Routes
-|--------------------------------------------------------------------------
-*/
+/*Administrator Routes*/
 
 Route::prefix('admin')->name('admin.')->middleware('role:Administrator')->group(function () {
     Route::get('/dashboard', [Admin\DashboardController::class, 'index'])->name('dashboard');
@@ -43,11 +35,7 @@ Route::prefix('admin')->name('admin.')->middleware('role:Administrator')->group(
     Route::get('/journals', [Admin\JournalController::class, 'index'])->name('journals.index');
 });
 
-/*
-|--------------------------------------------------------------------------
-| Teller Routes
-|--------------------------------------------------------------------------
-*/
+/*Teller Routes*/
 
 Route::prefix('teller')->name('teller.')->middleware('role:Teller')->group(function () {
     Route::get('/dashboard', [Teller\DashboardController::class, 'index'])->name('dashboard');
@@ -76,11 +64,7 @@ Route::prefix('teller')->name('teller.')->middleware('role:Teller')->group(funct
     Route::patch('/reports/{report}/submit', [Teller\DailyReportController::class, 'submit'])->name('reports.submit');
 });
 
-/*
-|--------------------------------------------------------------------------
-| Supervisor Routes
-|--------------------------------------------------------------------------
-*/
+/*Supervisor Routes*/
 
 Route::prefix('supervisor')->name('supervisor.')->middleware('role:Supervisor')->group(function () {
     Route::get('/dashboard', [Supervisor\DashboardController::class, 'index'])->name('dashboard');
@@ -98,11 +82,7 @@ Route::prefix('supervisor')->name('supervisor.')->middleware('role:Supervisor')-
     Route::get('/journals', [Supervisor\JournalController::class, 'index'])->name('journals.index');
 });
 
-/*
-|--------------------------------------------------------------------------
-| Nasabah Routes
-|--------------------------------------------------------------------------
-*/
+/*Nasabah Routes*/
 
 Route::prefix('nasabah')->name('nasabah.')->middleware('nasabah')->group(function () {
     Route::get('/dashboard', [Nasabah\DashboardController::class, 'index'])->name('dashboard');

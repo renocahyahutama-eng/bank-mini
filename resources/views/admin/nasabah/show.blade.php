@@ -58,7 +58,7 @@
             <div class="balance-display" style="margin-bottom:1rem;">
                 <div class="balance-label">Total Saldo Tersimpan</div>
                 <div class="balance-amount">Rp {{ number_format($nasabah->balance, 0, ',', '.') }}</div>
-                <div class="balance-account">{{ $nasabah->account_number }} &bull; {{ $nasabah->student_name }}</div>
+                <div class="balance-account">{{ $nasabah->account_number }}</div>
             </div>
 
             <div class="card">
