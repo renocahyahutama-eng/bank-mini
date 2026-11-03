@@ -50,7 +50,7 @@
 
                 <div class="form-group">
                     <label for="description">Keterangan Transaksi (Opsional)</label>
-                    <input type="text" class="form-control" id="description" name="description" value="{{ old('description') }}" placeholder="Contoh: Tabungan mingguan, setoran awal">
+                    <input type="text" class="form-control" id="description" name="description" value="{{ old('description') }}">
                 </div>
 
                 <div class="alert alert-warning" style="margin-top:1.25rem;">

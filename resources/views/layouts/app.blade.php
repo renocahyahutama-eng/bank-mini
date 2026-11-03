@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'E-Teller Bank Mini') — Bank Mini Sekolah</title>
-    <meta name="description" content="Sistem Informasi E-Teller Bank Mini Sekolah">
+    <title>@yield('title', 'E-Teller Bank Mini') — SMKN 1 Bantul</title>
+    <meta name="description" content="Sistem Informasi E-Teller Bank Mini SMKN 1 Bantul">
+    <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     @yield('styles')
 </head>
@@ -20,10 +21,11 @@
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-brand">
                 <div class="brand-icon">
-                    <svg viewBox="0 0 24 24"><path d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11M20 10v11M8 14v3M12 14v3M16 14v3"/></svg>
+                    <img src="{{ asset('images/logo.png') }}" alt="Logo SMKN 1 Bantul">
                 </div>
                 <div class="brand-text">
                     <h2>Bank Mini</h2>
+                    <span>SMKN 1 BANTUL</span>
                 </div>
             </div>
 
@@ -125,6 +127,31 @@
         document.querySelectorAll('.alert').forEach(function(el) {
             setTimeout(function() { el.style.opacity = '0'; setTimeout(function() { el.remove(); }, 300); }, 5000);
         });
+
+        // Real-time Indonesian Western Time (WIB) Clock
+        function updateLiveWIB() {
+            const now = new Date();
+            const timeFormatter = new Intl.DateTimeFormat('id-ID', {
+                timeZone: 'Asia/Jakarta',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: false
+            });
+            const dateFormatter = new Intl.DateTimeFormat('id-ID', {
+                timeZone: 'Asia/Jakarta',
+                weekday: 'short',
+                day: 'numeric',
+                month: 'short',
+                year: 'numeric'
+            });
+            const timeEl = document.getElementById('live-wib-time');
+            const dateEl = document.getElementById('live-wib-date');
+            if (timeEl) timeEl.textContent = timeFormatter.format(now).replace(/\./g, ':') + ' WIB';
+            if (dateEl) dateEl.textContent = dateFormatter.format(now);
+        }
+        updateLiveWIB();
+        setInterval(updateLiveWIB, 1000);
     </script>
 
     @yield('scripts')

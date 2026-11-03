@@ -44,6 +44,136 @@
     </a>
 @endsection
 
+@section('styles')
+<style>
+    .scanner-container {
+        position: relative;
+        width: 100%;
+        max-width: 420px;
+        margin: 0 auto;
+        border-radius: 16px;
+        overflow: hidden;
+        background: #0f172a;
+        aspect-ratio: 4 / 3;
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
+    }
+    #qr-reader {
+        width: 100% !important;
+        height: 100% !important;
+        border: none !important;
+        padding: 0 !important;
+    }
+    #qr-reader video {
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: cover !important;
+        display: block !important;
+    }
+    #qr-reader__scan_region {
+        width: 100% !important;
+        height: 100% !important;
+        min-height: 100% !important;
+    }
+    #qr-reader__scan_region video {
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: cover !important;
+    }
+    #qr-reader__dashboard,
+    #qr-reader__dashboard_section,
+    #qr-reader__header_message,
+    #qr-reader img[alt="Info icon"] {
+        display: none !important;
+    }
+    .scanner-overlay {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        pointer-events: none;
+        z-index: 10;
+    }
+    .scanner-viewfinder {
+        width: 220px;
+        height: 220px;
+        position: relative;
+        box-shadow: 0 0 0 9999px rgba(15, 23, 42, 0.45);
+        border-radius: 12px;
+    }
+    .scanner-viewfinder::before,
+    .scanner-viewfinder::after,
+    .scanner-viewfinder .corner-bl::before,
+    .scanner-viewfinder .corner-br::before {
+        content: '';
+        position: absolute;
+        width: 32px;
+        height: 32px;
+        border-color: #3b82f6;
+        border-style: solid;
+        border-width: 0;
+        z-index: 2;
+    }
+    .scanner-viewfinder::before {
+        top: 0; left: 0;
+        border-top-width: 4px; border-left-width: 4px;
+        border-top-left-radius: 10px;
+    }
+    .scanner-viewfinder::after {
+        top: 0; right: 0;
+        border-top-width: 4px; border-right-width: 4px;
+        border-top-right-radius: 10px;
+    }
+    .scanner-viewfinder .corner-bl::before {
+        bottom: 0; left: 0;
+        border-bottom-width: 4px; border-left-width: 4px;
+        border-bottom-left-radius: 10px;
+    }
+    .scanner-viewfinder .corner-br::before {
+        bottom: 0; right: 0;
+        border-bottom-width: 4px; border-right-width: 4px;
+        border-bottom-right-radius: 10px;
+    }
+    .scanner-line {
+        position: absolute;
+        left: 6px;
+        right: 6px;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, #60a5fa, transparent);
+        animation: scanLine 2s ease-in-out infinite;
+        box-shadow: 0 0 10px rgba(96, 165, 250, 0.8);
+        z-index: 3;
+    }
+    @keyframes scanLine {
+        0%, 100% { top: 6px; }
+        50% { top: calc(100% - 8px); }
+    }
+    .scanner-hint {
+        text-align: center;
+        color: #ffffff;
+        font-size: 0.78rem;
+        font-weight: 500;
+        position: absolute;
+        bottom: 12px;
+        left: 0; right: 0;
+        z-index: 12;
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+    }
+    .scanner-btn-group {
+        display: flex;
+        gap: 0.5rem;
+        justify-content: center;
+        margin-top: 1rem;
+    }
+    #qr-reader-container {
+        display: none;
+    }
+    #qr-reader-container.active {
+        display: block;
+    }
+</style>
+@endsection
+
 @section('content')
     <div class="page-header">
         <div>
@@ -57,15 +187,30 @@
                 <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/></svg>
                 Pindai QR Code Nasabah
             </h3>
-            
-            <div class="qr-scanner-area" id="qr-reader" style="width: 100%; max-width: 480px; margin: 0 auto; display:none;"></div>
-            
-            <div class="text-center mt-2">
+
+            <div id="qr-reader-container">
+                <div class="scanner-container">
+                    <div id="qr-reader"></div>
+                    <div class="scanner-overlay">
+                        <div class="scanner-viewfinder">
+                            <div class="corner-bl" style="position:absolute;bottom:0;left:0;width:100%;height:100%;"></div>
+                            <div class="corner-br" style="position:absolute;bottom:0;right:0;width:100%;height:100%;"></div>
+                            <div class="scanner-line"></div>
+                        </div>
+                    </div>
+                    <div class="scanner-hint">Arahkan QR Code nasabah ke kamera</div>
+                </div>
+            </div>
+
+            <div class="scanner-btn-group">
                 <button type="button" class="btn btn-primary" id="btn-start-scanner">
                     <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                    Aktifkan Kamera Pemindai QR
+                    Aktifkan Kamera
                 </button>
-                <button type="button" class="btn btn-secondary" id="btn-stop-scanner" style="display:none;">Tutup Kamera</button>
+                <button type="button" class="btn btn-danger" id="btn-stop-scanner" style="display:none;">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                    Tutup Kamera
+                </button>
             </div>
             
             {{-- Hasil Scan dengan QR Display --}}
@@ -144,9 +289,9 @@
                             <td class="font-mono font-bold">Rp {{ number_format($nasabah->balance, 0, ',', '.') }}</td>
                             <td style="text-align:center;">
                                 <div class="btn-group" style="justify-content:center;">
-                                    <button type="button" class="btn btn-sm btn-secondary" onclick="showQRModal('{{ $nasabah->account_number }}', '{{ addslashes($nasabah->student_name) }}', '{{ $nasabah->class }}', '{{ number_format($nasabah->balance, 0, ',', '.') }}')" title="Lihat Profil & QR">
+                                    <button type="button" class="btn btn-sm btn-secondary" onclick="showQRModal('{{ $nasabah->account_number }}', '{{ addslashes($nasabah->student_name) }}', '{{ $nasabah->jurusan }}', '{{ $nasabah->class }}', '{{ number_format($nasabah->balance, 0, ',', '.') }}', '{{ $nasabah->student_number }}')" title="Detail Nasabah & QR Code">
                                         <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/></svg>
-                                        QR
+                                        Detail & QR
                                     </button>
                                     <a href="{{ route('teller.deposit.create', ['nasabah_id' => $nasabah->id]) }}" class="btn btn-sm btn-primary" title="Setoran Tunai">
                                         Setoran
@@ -173,22 +318,46 @@
         </div>
     </div>
 
-    {{-- Modal Pop-up QR Code Nasabah untuk Teller --}}
-    <div id="modal-qr" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.5); z-index:999; align-items:center; justify-content:center; backdrop-filter:blur(2px);">
-        <div style="background:white; border-radius:12px; padding:1.75rem; max-width:360px; width:90%; text-align:center; box-shadow:0 10px 25px rgba(0,0,0,0.15);">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
-                <h3 style="margin:0; font-size:1rem;">QR Code Profil Nasabah</h3>
-                <button type="button" onclick="closeQRModal()" style="border:none; background:none; font-size:1.25rem; cursor:pointer; color:var(--text-muted);">&times;</button>
+    {{-- Modal Pop-up Detail & QR Code Nasabah untuk Teller --}}
+    <div id="modal-qr" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(15,23,42,0.6); z-index:999; align-items:center; justify-content:center; backdrop-filter:blur(4px); padding:1rem;">
+        <div style="background:white; border-radius:16px; padding:1.5rem 1.75rem; max-width:400px; width:100%; text-align:center; box-shadow:0 20px 40px rgba(0,0,0,0.2); border:1px solid var(--border);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.25rem;">
+                <h3 style="margin:0; font-size:1.05rem; font-weight:700; display:flex; align-items:center; gap:0.4rem; color:var(--text-primary);">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/></svg>
+                    Detail Profil & QR Nasabah
+                </h3>
+                <button type="button" onclick="closeQRModal()" style="border:none; background:transparent; font-size:1.5rem; line-height:1; cursor:pointer; color:var(--text-muted); padding:0.25rem;">&times;</button>
             </div>
-            <div id="modal-qrcode-container" style="display:inline-block; padding:10px; background:white; border:1px solid var(--border); border-radius:8px;"></div>
-            <div style="margin-top:0.75rem;">
-                <div class="font-mono" id="modal-qr-account" style="font-size:1.15rem; font-weight:800; color:var(--primary);"></div>
-                <div id="modal-qr-name" style="font-weight:600; font-size:0.9rem; margin-top:0.2rem;"></div>
-                <div id="modal-qr-class" style="font-size:0.75rem; color:var(--text-muted);"></div>
-                <div style="margin-top:0.5rem; font-weight:700; color:var(--success);" id="modal-qr-balance"></div>
+            
+            <div style="text-align:center; margin-bottom:1.25rem;">
+                <div id="modal-qrcode-container" style="display:inline-block; padding:12px; background:white; border:2px solid var(--border); border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,0.06);"></div>
             </div>
+            
+            <div style="background:var(--bg-body); padding:0.85rem 1.1rem; border-radius:12px; border:1px solid var(--border); display:flex; flex-direction:column; gap:0.55rem; text-align:left;">
+                <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.82rem;">
+                    <span style="color:var(--text-secondary); font-weight:500;">No. Rekening</span>
+                    <span class="font-mono" id="modal-qr-account" style="color:var(--primary); font-weight:700; font-size:0.88rem;"></span>
+                </div>
+                <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.82rem;">
+                    <span style="color:var(--text-secondary); font-weight:500;">NIS</span>
+                    <span class="font-mono" id="modal-qr-nis" style="color:var(--text-primary); font-weight:600;"></span>
+                </div>
+                <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.82rem;">
+                    <span style="color:var(--text-secondary); font-weight:500;">Nama Siswa</span>
+                    <span id="modal-qr-name" style="color:var(--text-primary); font-weight:700;"></span>
+                </div>
+                <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.82rem;">
+                    <span style="color:var(--text-secondary); font-weight:500;">Jurusan & Kelas</span>
+                    <span id="modal-qr-jurusan-class" style="color:var(--text-primary); font-weight:600;"></span>
+                </div>
+                <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.82rem; padding-top:0.45rem; border-top:1px dashed var(--border);">
+                    <span style="color:var(--text-secondary); font-weight:500;">Saldo Saat Ini</span>
+                    <span class="font-mono font-bold" id="modal-qr-balance" style="color:var(--success); font-size:0.92rem;"></span>
+                </div>
+            </div>
+            
             <div style="margin-top:1.25rem;">
-                <button type="button" class="btn btn-secondary btn-sm" onclick="closeQRModal()" style="width:100%; justify-content:center;">Tutup</button>
+                <button type="button" class="btn btn-secondary" onclick="closeQRModal()" style="width:100%; justify-content:center; padding:0.55rem;">Tutup</button>
             </div>
         </div>
     </div>
@@ -201,42 +370,54 @@
     document.addEventListener('DOMContentLoaded', function() {
         const btnStart = document.getElementById('btn-start-scanner');
         const btnStop = document.getElementById('btn-stop-scanner');
-        const readerEl = document.getElementById('qr-reader');
+        const containerEl = document.getElementById('qr-reader-container');
         const resultEl = document.getElementById('scan-result');
-        let html5QrcodeScanner = null;
+        let html5Qrcode = null;
 
         btnStart.addEventListener('click', function() {
-            readerEl.style.display = 'block';
+            containerEl.classList.add('active');
             btnStart.style.display = 'none';
             btnStop.style.display = 'inline-flex';
             resultEl.style.display = 'none';
 
-            html5QrcodeScanner = new Html5QrcodeScanner(
-                "qr-reader", 
-                { fps: 10, qrbox: {width: 250, height: 250} },
-                false
-            );
-            
-            html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+            html5Qrcode = new Html5Qrcode("qr-reader");
+            const scanConfig = { fps: 10, qrbox: { width: 220, height: 220 }, disableFlip: false };
+
+            html5Qrcode.start(
+                { facingMode: "environment" },
+                scanConfig,
+                onScanSuccess,
+                onScanFailure
+            ).catch(err => {
+                console.warn("Environment camera failed, trying default/user camera:", err);
+                return html5Qrcode.start(
+                    { facingMode: "user" },
+                    scanConfig,
+                    onScanSuccess,
+                    onScanFailure
+                );
+            }).catch(err => {
+                console.error("Camera error:", err);
+                alert('Gagal mengakses kamera. Pastikan browser diizinkan mengakses kamera perangkat.');
+                stopScanner();
+            });
         });
 
-        btnStop.addEventListener('click', function() {
-            if (html5QrcodeScanner) {
-                html5QrcodeScanner.clear();
+        btnStop.addEventListener('click', stopScanner);
+
+        function stopScanner() {
+            if (html5Qrcode && html5Qrcode.isScanning) {
+                html5Qrcode.stop().then(() => {
+                    html5Qrcode.clear();
+                }).catch(err => console.error("Stop error:", err));
             }
-            readerEl.style.display = 'none';
+            containerEl.classList.remove('active');
             btnStart.style.display = 'inline-flex';
             btnStop.style.display = 'none';
-        });
+        }
 
         function onScanSuccess(decodedText, decodedResult) {
-            if (html5QrcodeScanner) {
-                html5QrcodeScanner.clear();
-            }
-            readerEl.style.display = 'none';
-            btnStart.style.display = 'inline-flex';
-            btnStop.style.display = 'none';
-            
+            stopScanner();
             fetchNasabahData(decodedText.trim());
         }
 
@@ -289,12 +470,13 @@
         }
     });
 
-    // Modal QR Code Profil untuk Teller
-    function showQRModal(accountNumber, studentName, studentClass, balance) {
+    // Modal Detail Profil & QR Code untuk Teller
+    function showQRModal(accountNumber, studentName, jurusan, studentClass, balance, studentNumber) {
         document.getElementById('modal-qr-account').textContent = accountNumber;
+        document.getElementById('modal-qr-nis').textContent = studentNumber || '-';
         document.getElementById('modal-qr-name').textContent = studentName;
-        document.getElementById('modal-qr-class').textContent = studentClass;
-        document.getElementById('modal-qr-balance').textContent = 'Saldo: Rp ' + balance;
+        document.getElementById('modal-qr-jurusan-class').textContent = (jurusan ? jurusan + ' — ' : '') + studentClass;
+        document.getElementById('modal-qr-balance').textContent = 'Rp ' + balance;
 
         const qrContainer = document.getElementById('modal-qrcode-container');
         qrContainer.innerHTML = '';

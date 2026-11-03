@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Bank Mini Sekolah</title>
-    <meta name="description" content="Login ke Sistem Informasi Bank Mini Sekolah">
+    <title>Login — Bank Mini SMKN 1 Bantul</title>
+    <meta name="description" content="Login ke Sistem Informasi Bank Mini SMKN 1 Bantul">
+    <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
 </head>
 <body>
@@ -12,9 +13,10 @@
         <div class="login-card">
             <div class="login-logo">
                 <div class="logo-icon">
-                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11M20 10v11M8 14v3M12 14v3M16 14v3"/></svg>
+                    <img src="{{ asset('images/logo.png') }}" alt="Logo SMKN 1 Bantul">
                 </div>
-                <h1>Bank Mini Sekolah</h1>
+                <h1>Bank Mini SMKN 1 Bantul</h1>
+                <p>Sistem Layanan Perbankan Mini Sekolah</p>
             </div>
 
             @if(session('success'))

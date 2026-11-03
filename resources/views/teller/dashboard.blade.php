@@ -111,7 +111,7 @@
             <table>
                 <thead>
                     <tr>
-                        <th>Waktu</th>
+                        <th>Waktu (WIB)</th>
                         <th>No. Rekening</th>
                         <th>Nasabah</th>
                         <th>Tipe</th>
@@ -122,7 +122,7 @@
                 <tbody>
                     @forelse($recentTransactions as $tx)
                         <tr>
-                            <td><span style="font-weight:600;">{{ $tx->created_at->format('H:i') }}</span></td>
+                            <td><span style="font-weight:600;">{{ $tx->created_at->format('H:i') }} WIB</span></td>
                             <td class="font-mono font-bold">{{ $tx->nasabah->account_number ?? '-' }}</td>
                             <td>{{ $tx->nasabah->student_name ?? '-' }}</td>
                             <td>

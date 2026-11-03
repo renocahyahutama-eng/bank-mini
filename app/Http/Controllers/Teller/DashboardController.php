@@ -33,8 +33,8 @@ class DashboardController extends Controller
 
         $recentTransactions = Transaction::with('nasabah')
             ->where('user_id', $user->id)
+            ->whereDate('created_at', $today)
             ->orderByDesc('created_at')
-            ->limit(10)
             ->get();
 
         return view('teller.dashboard', compact(

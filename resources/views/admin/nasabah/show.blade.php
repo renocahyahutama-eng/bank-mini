@@ -222,9 +222,10 @@
                 </head>
                 <body>
                     <div class="card">
-                        <div class="title">BANK MINI SEKOLAH</div>
+                        <img src="{{ asset('images/logo.png') }}" style="width:48px; height:48px; object-fit:contain; margin:0 auto 10px; display:block;" />
+                        <div class="title">BANK MINI SMKN 1 BANTUL</div>
                         <div class="subtitle">KARTU QR NASABAH</div>
-                        <img src="${qrImgSrc}" style="width:160px; height:160px;" />
+                        <img src="${qrImgSrc}" style="width:160px; height:160px; margin:0 auto; display:block;" />
                         <div class="acc-num">${accountNumber}</div>
                         <div class="name">{{ $nasabah->student_name }}</div>
                         <div class="class">{{ $nasabah->class }} {{ $nasabah->jurusan ? '(' . $nasabah->jurusan . ')' : '' }}</div>

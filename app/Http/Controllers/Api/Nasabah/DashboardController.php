@@ -1,0 +1,111 @@
+<?php
+
+namespace App\Http\Controllers\Api\Nasabah;
+
+use App\Http\Controllers\Api\ApiController;
+use App\Models\Transaction;
+use Carbon\Carbon;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+
+class DashboardController extends ApiController
+{
+    /**
+     * Get Dashboard Summary for Nasabah Mobile App.
+     */
+    public function index(Request $request): JsonResponse
+    {
+        $nasabah = $this->getNasabah($request);
+
+        if (!$nasabah || $nasabah->status !== 'Aktif') {
+            return $this->errorResponse('Rekening nasabah tidak aktif.', 403);
+        }
+
+        $now = Carbon::now();
+        $startOfMonth = $now->copy()->startOfMonth();
+        $endOfMonth = $now->copy()->endOfMonth();
+
+        // Transaction statistics
+        $totalSetoran = Transaction::where('nasabah_id', $nasabah->id)
+            ->where('transaction_type', 'Deposit')
+            ->sum('amount');
+
+        $totalPenarikan = Transaction::where('nasabah_id', $nasabah->id)
+            ->where('transaction_type', 'Withdrawal')
+            ->sum('amount');
+
+        $countSetoran = Transaction::where('nasabah_id', $nasabah->id)
+            ->where('transaction_type', 'Deposit')
+            ->count();
+
+        $countPenarikan = Transaction::where('nasabah_id', $nasabah->id)
+            ->where('transaction_type', 'Withdrawal')
+            ->count();
+
+        $monthlySetoran = Transaction::where('nasabah_id', $nasabah->id)
+            ->where('transaction_type', 'Deposit')
+            ->whereBetween('created_at', [$startOfMonth, $endOfMonth])
+            ->sum('amount');
+
+        $monthlyPenarikan = Transaction::where('nasabah_id', $nasabah->id)
+            ->where('transaction_type', 'Withdrawal')
+            ->whereBetween('created_at', [$startOfMonth, $endOfMonth])
+            ->sum('amount');
+
+        // Recent 5 transactions
+        $recentTransactions = Transaction::with('user:id,name')
+            ->where('nasabah_id', $nasabah->id)
+            ->orderByDesc('created_at')
+            ->limit(5)
+            ->get()
+            ->map(function ($tx) {
+                return [
+                    'id' => $tx->id,
+                    'transaction_code' => 'TX-' . str_pad($tx->id, 6, '0', STR_PAD_LEFT),
+                    'type' => $tx->transaction_type,
+                    'type_label' => $tx->transaction_type === 'Deposit' ? 'Setoran Tunai' : 'Penarikan Tunai',
+                    'amount' => (float) $tx->amount,
+                    'amount_formatted' => ($tx->transaction_type === 'Deposit' ? '+ ' : '- ') . 'Rp ' . number_format((float) $tx->amount, 0, ',', '.'),
+                    'balance_after' => (float) $tx->balance_after,
+                    'balance_after_formatted' => 'Rp ' . number_format((float) $tx->balance_after, 0, ',', '.'),
+                    'description' => $tx->description ?: ($tx->transaction_type === 'Deposit' ? 'Setoran tabungan via Teller' : 'Penarikan tabungan via Teller'),
+                    'teller_name' => $tx->user->name ?? 'Petugas Teller',
+                    'date' => $tx->created_at->format('Y-m-d H:i:s'),
+                    'date_formatted' => $tx->created_at->translatedFormat('d M Y, H:i') . ' WIB',
+                ];
+            });
+
+        return $this->successResponse([
+            'account' => [
+                'account_number' => $nasabah->account_number,
+                'student_name' => $nasabah->student_name,
+                'student_number' => $nasabah->student_number,
+                'class' => $nasabah->class,
+                'jurusan' => $nasabah->jurusan,
+                'balance' => (float) $nasabah->balance,
+                'balance_formatted' => 'Rp ' . number_format((float) $nasabah->balance, 0, ',', '.'),
+                'status' => $nasabah->status,
+            ],
+            'statistics' => [
+                'total_deposit' => (float) $totalSetoran,
+                'total_deposit_formatted' => 'Rp ' . number_format((float) $totalSetoran, 0, ',', '.'),
+                'total_withdrawal' => (float) $totalPenarikan,
+                'total_withdrawal_formatted' => 'Rp ' . number_format((float) $totalPenarikan, 0, ',', '.'),
+                'count_deposit' => $countSetoran,
+                'count_withdrawal' => $countPenarikan,
+                'total_transactions' => $countSetoran + $countPenarikan,
+                'monthly_deposit' => (float) $monthlySetoran,
+                'monthly_deposit_formatted' => 'Rp ' . number_format((float) $monthlySetoran, 0, ',', '.'),
+                'monthly_withdrawal' => (float) $monthlyPenarikan,
+                'monthly_withdrawal_formatted' => 'Rp ' . number_format((float) $monthlyPenarikan, 0, ',', '.'),
+            ],
+            'recent_transactions' => $recentTransactions,
+            'bank_info' => [
+                'institution' => 'SMK Negeri 1 Bantul',
+                'service_name' => 'Bank Mini SMKN 1 Bantul',
+                'operational_hours' => 'Senin - Jumat, 08.00 - 14.00 WIB',
+                'counter_location' => 'Gedung Keuangan & Bank Mini Lt. 1',
+            ],
+        ], 'Dashboard nasabah berhasil dimuat.');
+    }
+}

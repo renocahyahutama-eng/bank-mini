@@ -51,7 +51,7 @@
 
                 <div class="form-group">
                     <label for="description">Keterangan Penarikan (Opsional)</label>
-                    <input type="text" class="form-control" id="description" name="description" value="{{ old('description') }}" placeholder="Contoh: Pembayaran kegiatan, keperluan pribadi">
+                    <input type="text" class="form-control" id="description" name="description" value="{{ old('description') }}">
                 </div>
 
                 <hr style="border:none; border-top:1px dashed var(--border); margin:1.5rem 0;">

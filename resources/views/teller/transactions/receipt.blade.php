@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Struk Transaksi #{{ str_pad($transaction->id, 6, '0', STR_PAD_LEFT) }} - E-Teller Bank Mini</title>
+    <title>Struk Transaksi #{{ str_pad($transaction->id, 6, '0', STR_PAD_LEFT) }} - Bank Mini SMKN 1 Bantul</title>
+    <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -267,8 +268,12 @@
 
     <div class="receipt-card">
         <div class="receipt-header">
+            <div style="display:flex; justify-content:center; margin-bottom:0.6rem;">
+                <img src="{{ asset('images/logo.png') }}" alt="Logo SMKN 1 Bantul" style="width: 52px; height: 52px; object-fit: contain;">
+            </div>
             <div class="bank-badge">E-Teller Bank Mini</div>
-            <h1 class="bank-title">BANK MINI SEKOLAH</h1>
+            <h1 class="bank-title">BANK MINI SMKN 1 BANTUL</h1>
+            <div class="bank-subtitle">SMK Negeri 1 Bantul &bull; Layanan Perbankan Siswa</div>
             <div>
                 <span class="tx-type-badge {{ $transaction->transaction_type === 'Deposit' ? 'tx-type-deposit' : 'tx-type-withdrawal' }}">
                     {{ $transaction->transaction_type === 'Deposit' ? 'Setoran Tunai' : 'Penarikan Tunai' }}
@@ -331,7 +336,7 @@
 
         <div class="receipt-footer">
             <div id="receipt-qrcode" style="display:flex; justify-content:center; margin:0.85rem 0;"></div>
-            <p style="margin-top:0.25rem;">Struk digital ini adalah bukti transaksi yang sah dan diakui secara resmi oleh Bank Mini Sekolah.</p>
+            <p style="margin-top:0.25rem;">Struk digital ini adalah bukti transaksi yang sah dan diakui secara resmi oleh Bank Mini SMKN 1 Bantul.</p>
         </div>
     </div>
 

@@ -3,9 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Laravel\Sanctum\HasApiTokens;
 
 class CustomerAccount extends Authenticatable
 {
+    use HasApiTokens;
+
     protected $table = 'customer_accounts';
 
     protected $fillable = [
