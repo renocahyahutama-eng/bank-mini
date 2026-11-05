@@ -810,6 +810,25 @@ textarea.form-control {
     cursor: not-allowed;
 }
 
+.pagination-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.card-footer svg,
+.pagination svg,
+nav[role="navigation"] svg {
+    width: 16px !important;
+    height: 16px !important;
+    max-width: 16px !important;
+    max-height: 16px !important;
+    display: inline-block !important;
+}
+
 /* ── Empty State ── */
 .empty-state {
     text-align: center;

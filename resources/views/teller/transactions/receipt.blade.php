@@ -256,8 +256,16 @@
 </head>
 <body>
 
+    @php
+        $backUrl = match($transaction->transaction_type) {
+            'Withdrawal' => route('teller.withdrawal.create'),
+            'Deposit' => route('teller.deposit.create'),
+            default => route('teller.transactions.index'),
+        };
+    @endphp
+
     <div class="action-bar">
-        <a href="javascript:window.close();" class="btn btn-secondary">
+        <a href="{{ $backUrl }}" class="btn btn-secondary" id="btn-close" onclick="handleClose(event, '{{ $backUrl }}')">
             &larr; Tutup
         </a>
         <button onclick="window.print()" class="btn btn-primary" id="btn-print">
@@ -354,6 +362,26 @@
             });
         } catch(e) {
             console.error(e);
+        }
+
+        // Navigasi tombol Tutup
+        function handleClose(e, fallbackUrl) {
+            // Jika halaman ini dibuka sebagai pop-up / tab baru terpisah
+            if (window.opener && !window.opener.closed) {
+                e.preventDefault();
+                try {
+                    window.close();
+                } catch (_) {}
+                // Jika browser memblokir penutupan tab, fallback ke halaman form
+                setTimeout(function() {
+                    window.location.href = fallbackUrl;
+                }, 150);
+                return;
+            }
+
+            // Jika dibuka di tab yang sama (hasil redirect penarikan), navigasi ke halaman penarikan
+            e.preventDefault();
+            window.location.href = fallbackUrl;
         }
     </script>
 </body>

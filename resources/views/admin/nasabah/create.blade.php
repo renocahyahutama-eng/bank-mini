@@ -102,6 +102,12 @@
                 </div>
 
                 <div class="form-group">
+                    <label for="email">Alamat Email (Untuk Reset Password OTP)</label>
+                    <input type="email" class="form-control" id="email" name="email" value="{{ old('email') }}" placeholder="Contoh: nama@gmail.com">
+                    <div class="form-hint">Digunakan saat nasabah lupa password dan meminta kode OTP verifikasi.</div>
+                </div>
+
+                <div class="form-group">
                     <label for="security_pin">PIN Keamanan Transaksi (6 Digit Angka) <span style="color:var(--danger);">*</span></label>
                     <input type="password" class="form-control" id="security_pin" name="security_pin" placeholder="Masukkan 6 digit angka" maxlength="6" pattern="[0-9]{6}" inputmode="numeric" required style="max-width:300px;">
                 </div>

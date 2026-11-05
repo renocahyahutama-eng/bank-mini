@@ -16,6 +16,7 @@ class Nasabah extends Model
         'jurusan',
         'gender',
         'phone_number',
+        'email',
         'security_pin',
         'balance',
         'status',

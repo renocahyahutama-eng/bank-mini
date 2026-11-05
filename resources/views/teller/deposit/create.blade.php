@@ -45,7 +45,7 @@
 
                 <div class="form-group">
                     <label for="amount">Nominal Setoran (Rp) <span style="color:var(--danger);">*</span></label>
-                    <input type="number" class="form-control" id="amount" name="amount" value="{{ old('amount') }}" min="1" step="1" placeholder="Masukkan jumlah setoran" required style="font-size: 1.4rem; font-weight: bold; font-family: monospace;">
+                    <input type="number" class="form-control" id="amount" name="amount" value="{{ old('amount') }}" min="1000" step="1000">
                 </div>
 
                 <div class="form-group">

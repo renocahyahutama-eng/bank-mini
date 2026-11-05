@@ -105,7 +105,7 @@
             @endif
 
             {{-- Validation Errors --}}
-            @if($errors->any())
+            @if(isset($errors) && $errors->any())
                 <div class="alert alert-error" id="alert-validation">
                     <div>
                         <strong>Terjadi kesalahan:</strong>

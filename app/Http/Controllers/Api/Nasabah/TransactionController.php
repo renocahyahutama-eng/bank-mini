@@ -39,15 +39,9 @@ class TransactionController extends ApiController
             $query->whereDate('created_at', '<=', $endDate);
         }
 
-        // Search in description or ID
-        if ($search = $request->input('search')) {
-            $query->where(function ($q) use ($search) {
-                $cleanSearch = preg_replace('/[^0-9]/', '', $search);
-                if ($cleanSearch) {
-                    $q->orWhere('id', (int) $cleanSearch);
-                }
-                $q->orWhere('description', 'like', "%{$search}%");
-            });
+        // Advanced Multi-Criteria Search (ID, Tanggal, Bulan, Tahun, Nominal, Deskripsi, Tipe)
+        if ($search = trim((string) $request->input('search'))) {
+            $this->applySearchFilter($query, $search);
         }
 
         $perPage = (int) $request->input('per_page', 15);
@@ -147,5 +141,140 @@ class TransactionController extends ApiController
                 'notice' => 'Struk digital ini sah dan tersimpan secara resmi pada sistem E-Teller Bank Mini SMKN 1 Bantul.',
             ],
         ], 'Detail transaksi berhasil dimuat.');
+    }
+
+    /**
+     * Apply smart multi-criteria search filter to transactions query.
+     * Supports: Transaction ID/Code, Date (DD, DD/MM, DD/MM/YYYY), Month (Name or Number),
+     * Year, Transaction Type, Amount, and Description.
+     */
+    protected function applySearchFilter($query, string $search): void
+    {
+        $cleanSearch = trim($search);
+        $lower = strtolower($cleanSearch);
+
+        // Month dictionary in Indonesian & English
+        $monthMap = [
+            'januari' => 1, 'jan' => 1, 'january' => 1,
+            'februari' => 2, 'feb' => 2, 'february' => 2,
+            'maret' => 3, 'mar' => 3, 'march' => 3,
+            'april' => 4, 'apr' => 4,
+            'mei' => 5, 'may' => 5,
+            'juni' => 6, 'jun' => 6, 'june' => 6,
+            'juli' => 7, 'jul' => 7, 'july' => 7,
+            'agustus' => 8, 'ags' => 8, 'agu' => 8, 'aug' => 8, 'august' => 8,
+            'september' => 9, 'sep' => 9, 'sept' => 9,
+            'oktober' => 10, 'okt' => 10, 'oct' => 10, 'october' => 10,
+            'november' => 11, 'nov' => 11,
+            'desember' => 12, 'des' => 12, 'dec' => 12, 'december' => 12,
+        ];
+
+        $matchedMonth = null;
+        foreach ($monthMap as $mName => $mNum) {
+            if (str_contains($lower, $mName)) {
+                $matchedMonth = $mNum;
+                break;
+            }
+        }
+
+        // Check if there is a day alongside month name (e.g. "8 november" or "04 nov")
+        $matchedDayWithMonth = null;
+        if ($matchedMonth !== null && preg_match('/(\b\d{1,2}\b)/', $lower, $dayMatch)) {
+            $matchedDayWithMonth = (int) $dayMatch[1];
+        }
+
+        // Check for slash or dash date patterns like "04/11/2026", "4/11", "2026-11-04"
+        $parsedDate = null;
+        $parsedDayMonth = null;
+        if (preg_match('/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/', $cleanSearch, $dmY)) {
+            $parsedDate = sprintf('%04d-%02d-%02d', (int)$dmY[3], (int)$dmY[2], (int)$dmY[1]);
+        } elseif (preg_match('/^(\d{4})[\/\-](\d{1,2})[\/\-](\d{1,2})$/', $cleanSearch, $Ymd)) {
+            $parsedDate = sprintf('%04d-%02d-%02d', (int)$Ymd[1], (int)$Ymd[2], (int)$Ymd[3]);
+        } elseif (preg_match('/^(\d{1,2})[\/\-](\d{1,2})$/', $cleanSearch, $dm)) {
+            $parsedDayMonth = ['day' => (int)$dm[1], 'month' => (int)$dm[2]];
+        }
+
+        $query->where(function ($q) use (
+            $cleanSearch,
+            $lower,
+            $matchedMonth,
+            $matchedDayWithMonth,
+            $parsedDate,
+            $parsedDayMonth
+        ) {
+            // 1. Matched exact full date (e.g. 04/11/2026 or 2026-11-04)
+            if ($parsedDate) {
+                $q->orWhereDate('created_at', $parsedDate);
+            }
+
+            // 2. Matched day + month (e.g. "04/11" or "4/11")
+            if ($parsedDayMonth) {
+                $q->orWhere(function ($sub) use ($parsedDayMonth) {
+                    $sub->whereDay('created_at', $parsedDayMonth['day'])
+                        ->whereMonth('created_at', $parsedDayMonth['month']);
+                });
+            }
+
+            // 3. Matched day + month name (e.g. "8 november" or "4 nov")
+            if ($matchedMonth !== null && $matchedDayWithMonth !== null) {
+                $q->orWhere(function ($sub) use ($matchedMonth, $matchedDayWithMonth) {
+                    $sub->whereDay('created_at', $matchedDayWithMonth)
+                        ->whereMonth('created_at', $matchedMonth);
+                });
+            } elseif ($matchedMonth !== null) {
+                // Matched month name alone (e.g. "november", "nov", "agustus")
+                $q->orWhereMonth('created_at', $matchedMonth);
+            }
+
+            // 4. Numeric Searches
+            // e.g. "8" or "08" or "19" or "2026"
+            $digitsOnly = preg_replace('/[^0-9]/', '', $cleanSearch);
+            if ($digitsOnly !== '') {
+                $num = (int) $digitsOnly;
+
+                // Match transaction ID
+                $q->orWhere('id', $num);
+
+                // If number is 1-31, match Day of month (e.g. searching "8" or "08")
+                if ($num >= 1 && $num <= 31) {
+                    $q->orWhereDay('created_at', $num);
+                }
+
+                // If number is 1-12, match Month of year (e.g. searching "11" for November)
+                if ($num >= 1 && $num <= 12) {
+                    $q->orWhereMonth('created_at', $num);
+                }
+
+                // If number is 4 digits in year range, match Year
+                if ($num >= 2000 && $num <= 2100) {
+                    $q->orWhereYear('created_at', $num);
+                }
+
+                // Match amount (e.g. nominal 50000 or 10000)
+                $q->orWhere('amount', 'like', "%{$digitsOnly}%");
+            }
+
+            // 5. Transaction Code Prefix (e.g. "TX-", "TX-000019", "TX19")
+            if (str_starts_with($lower, 'tx')) {
+                $numPart = preg_replace('/[^0-9]/', '', $lower);
+                if ($numPart !== '') {
+                    $q->orWhere('id', (int) $numPart);
+                }
+            }
+
+            // 6. Transaction Type keywords (e.g. "setoran", "tarik", "penarikan", "deposit", "withdrawal")
+            if (str_contains($lower, 'setor') || str_contains($lower, 'deposit') || str_contains($lower, 'masuk')) {
+                $q->orWhere('transaction_type', 'Deposit');
+            }
+            if (str_contains($lower, 'tarik') || str_contains($lower, 'withdraw') || str_contains($lower, 'keluar')) {
+                $q->orWhere('transaction_type', 'Withdrawal');
+            }
+
+            // 7. General description & Teller name
+            $q->orWhere('description', 'like', "%{$cleanSearch}%");
+            $q->orWhereHas('user', function ($uq) use ($cleanSearch) {
+                $uq->where('name', 'like', "%{$cleanSearch}%");
+            });
+        });
     }
 }

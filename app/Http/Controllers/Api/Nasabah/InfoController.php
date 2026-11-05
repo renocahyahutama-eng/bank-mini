@@ -43,7 +43,7 @@ class InfoController extends ApiController
                 ],
                 [
                     'question' => 'Berapa minimal setoran tunai?',
-                    'answer'   => 'Minimal setoran tabungan adalah Rp 5.000.',
+                    'answer'   => 'Minimal setoran tabungan adalah Rp 1.000 dan harus dalam kelipatan ribuan penuh (tidak menerima pecahan koin 1 rupiah atau 500 rupiah).',
                 ],
                 [
                     'question' => 'Bagaimana jika lupa PIN keamanan transaksi?',

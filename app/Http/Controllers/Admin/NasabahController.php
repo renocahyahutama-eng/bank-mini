@@ -52,6 +52,7 @@ class NasabahController extends Controller
             'class' => 'required|string|max:20',
             'gender' => 'required|in:L,P',
             'phone_number' => 'nullable|string|max:20',
+            'email' => 'nullable|email|max:255|unique:nasabahs,email',
             'security_pin' => 'required|digits:6',
             'login_username' => 'required|string|max:255|unique:customer_accounts,username',
             'login_password' => 'required|string|min:6|confirmed',
@@ -69,6 +70,7 @@ class NasabahController extends Controller
                 'class' => $request->class,
                 'gender' => $request->gender,
                 'phone_number' => $request->phone_number,
+                'email' => $request->email,
                 'security_pin' => Hash::make($request->security_pin),
                 'balance' => 0,
                 'status' => 'Aktif',
@@ -106,6 +108,7 @@ class NasabahController extends Controller
             'class' => 'required|string|max:20',
             'gender' => 'required|in:L,P',
             'phone_number' => 'nullable|string|max:20',
+            'email' => 'nullable|email|max:255|unique:nasabahs,email,' . $nasabah->id,
             'security_pin' => 'nullable|digits:6',
             'status' => 'required|in:Aktif,Nonaktif',
             'login_username' => 'required|string|max:255|unique:customer_accounts,username,' . ($nasabah->customerAccount->id ?? 'NULL'),
@@ -121,6 +124,7 @@ class NasabahController extends Controller
                 'class' => $request->class,
                 'gender' => $request->gender,
                 'phone_number' => $request->phone_number,
+                'email' => $request->email,
                 'status' => $request->status,
             ];
 

@@ -37,11 +37,12 @@ class AuthController extends ApiController
         // 1. Try finding by CustomerAccount username
         $customerAccount = CustomerAccount::with('nasabah')->where('username', $identifier)->first();
 
-        // 2. If not found by username, try by account_number or student_number (NIS)
+        // 2. If not found by username, try by account_number, student_number (NIS), or email
         if (!$customerAccount) {
             $nasabah = Nasabah::with('customerAccount')
                 ->where('account_number', $identifier)
                 ->orWhere('student_number', $identifier)
+                ->orWhere('email', $identifier)
                 ->first();
 
             if ($nasabah && $nasabah->customerAccount) {
@@ -80,6 +81,7 @@ class AuthController extends ApiController
                 'jurusan' => $nasabah->jurusan,
                 'gender' => $nasabah->gender,
                 'phone_number' => $nasabah->phone_number,
+                'email' => $nasabah->email,
                 'status' => $nasabah->status,
                 'balance' => (float) $nasabah->balance,
                 'balance_formatted' => 'Rp ' . number_format((float) $nasabah->balance, 0, ',', '.'),
@@ -113,6 +115,7 @@ class AuthController extends ApiController
                 'jurusan' => $nasabah->jurusan,
                 'gender' => $nasabah->gender,
                 'phone_number' => $nasabah->phone_number,
+                'email' => $nasabah->email,
                 'status' => $nasabah->status,
                 'balance' => (float) $nasabah->balance,
                 'balance_formatted' => 'Rp ' . number_format((float) $nasabah->balance, 0, ',', '.'),

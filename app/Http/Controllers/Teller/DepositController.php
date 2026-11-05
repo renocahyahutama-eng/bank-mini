@@ -29,8 +29,21 @@ class DepositController extends Controller
     {
         $request->validate([
             'nasabah_id' => 'required|exists:nasabahs,id',
-            'amount' => 'required|numeric|min:1',
+            'amount' => [
+                'required',
+                'numeric',
+                'min:1000',
+                function ($attribute, $value, $fail) {
+                    if (fmod((float) $value, 1000) != 0) {
+                        $fail('Nominal setoran harus dalam kelipatan ribuan penuh (contoh: Rp 1.000, Rp 2.000, Rp 5.000), tidak boleh menggunakan pecahan seperti 1 rupiah atau 500 rupiah.');
+                    }
+                },
+            ],
             'description' => 'nullable|string|max:255',
+        ], [
+            'amount.min' => 'Nominal setoran minimal Rp 1.000 (tidak boleh 1 rupiah atau 500 rupiah).',
+            'amount.numeric' => 'Nominal setoran harus berupa angka.',
+            'amount.required' => 'Nominal setoran wajib diisi.',
         ]);
 
         $nasabah = Nasabah::findOrFail($request->nasabah_id);

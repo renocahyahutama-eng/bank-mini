@@ -51,6 +51,9 @@ Route::prefix('teller')->name('teller.')->middleware('role:Teller')->group(funct
     // Withdrawal
     Route::get('/withdrawal', [Teller\WithdrawalController::class, 'create'])->name('withdrawal.create');
     Route::post('/withdrawal', [Teller\WithdrawalController::class, 'store'])->name('withdrawal.store');
+    Route::post('/withdrawal/request-pin', [Teller\WithdrawalController::class, 'requestPin'])->name('withdrawal.request-pin');
+    Route::get('/withdrawal/check-status/{id}', [Teller\WithdrawalController::class, 'checkPinStatus'])->name('withdrawal.check-status');
+    Route::post('/withdrawal/cancel-request/{id}', [Teller\WithdrawalController::class, 'cancelPinRequest'])->name('withdrawal.cancel-request');
 
     // Transaction history & Receipt
     Route::get('/transactions', [Teller\TransactionController::class, 'index'])->name('transactions.index');
@@ -71,6 +74,8 @@ Route::prefix('supervisor')->name('supervisor.')->middleware('role:Supervisor')-
 
     // Report review
     Route::get('/reports', [Supervisor\ReportController::class, 'index'])->name('reports.index');
+    Route::get('/reports-print', [Supervisor\ReportController::class, 'printReport'])->name('reports.print');
+    Route::get('/reports-print/preview', [Supervisor\ReportController::class, 'printReportView'])->name('reports.print-preview');
     Route::get('/reports/{report}', [Supervisor\ReportController::class, 'show'])->name('reports.show');
     Route::patch('/reports/{report}/approve', [Supervisor\ReportController::class, 'approve'])->name('reports.approve');
     Route::patch('/reports/{report}/reject', [Supervisor\ReportController::class, 'reject'])->name('reports.reject');

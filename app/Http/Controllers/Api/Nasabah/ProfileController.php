@@ -33,6 +33,7 @@ class ProfileController extends ApiController
                 'gender' => $nasabah->gender === 'L' ? 'Laki-laki' : 'Perempuan',
                 'gender_code' => $nasabah->gender,
                 'phone_number' => $nasabah->phone_number,
+                'email' => $nasabah->email,
                 'status' => $nasabah->status,
                 'balance' => (float) $nasabah->balance,
                 'balance_formatted' => 'Rp ' . number_format((float) $nasabah->balance, 0, ',', '.'),
@@ -50,41 +51,42 @@ class ProfileController extends ApiController
 
     /**
      * Change Security PIN (6 digits) used for Teller Transactions.
+     * Nasabah memverifikasi menggunakan password login saat ini sehingga bisa mandiri tanpa bantuan Admin.
      */
     public function changePin(Request $request): JsonResponse
     {
         $nasabah = $this->getNasabah($request);
+        $customerAccount = $request->user();
 
         if (!$nasabah || $nasabah->status !== 'Aktif') {
             return $this->errorResponse('Rekening nasabah tidak aktif.', 403);
         }
 
         $validator = Validator::make($request->all(), [
-            'current_pin' => 'required|digits:6',
-            'new_pin'     => 'required|digits:6|different:current_pin|confirmed',
+            'password' => 'required|string',
+            'new_pin'  => 'required|digits:6|confirmed',
         ], [
-            'current_pin.required'   => 'PIN saat ini wajib diisi.',
-            'current_pin.digits'     => 'PIN saat ini harus berupa 6 digit angka.',
-            'new_pin.required'       => 'PIN baru wajib diisi.',
-            'new_pin.digits'         => 'PIN baru harus berupa 6 digit angka.',
-            'new_pin.different'      => 'PIN baru tidak boleh sama dengan PIN saat ini.',
-            'new_pin.confirmed'      => 'Konfirmasi PIN baru tidak cocok.',
+            'password.required' => 'Password akun login saat ini wajib diisi.',
+            'new_pin.required'  => 'PIN baru wajib diisi.',
+            'new_pin.digits'    => 'PIN baru harus berupa 6 digit angka.',
+            'new_pin.confirmed' => 'Konfirmasi PIN baru tidak cocok.',
         ]);
 
         if ($validator->fails()) {
             return $this->errorResponse('Validasi gagal', 422, $validator->errors());
         }
 
-        if (!Hash::check($request->input('current_pin'), $nasabah->security_pin)) {
-            return $this->errorResponse('PIN saat ini yang Anda masukkan salah.', 422, [
-                'current_pin' => ['PIN saat ini tidak cocok.'],
+        // Verifikasi password login akun nasabah saat ini
+        if (!Hash::check($request->input('password'), $customerAccount->password)) {
+            return $this->errorResponse('Password akun login yang Anda masukkan salah.', 422, [
+                'password' => ['Password akun tidak cocok.'],
             ]);
         }
 
         $nasabah->security_pin = Hash::make($request->input('new_pin'));
         $nasabah->save();
 
-        return $this->successResponse(null, 'PIN keamanan transaksi 6 digit berhasil diperbarui.');
+        return $this->successResponse(null, 'PIN keamanan transaksi 6 digit berhasil diperbarui!');
     }
 
     /**

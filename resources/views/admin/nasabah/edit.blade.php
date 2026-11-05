@@ -115,6 +115,12 @@
                     </div>
                 </div>
 
+                <div class="form-group">
+                    <label for="email">Alamat Email (Untuk Reset Password OTP)</label>
+                    <input type="email" class="form-control" id="email" name="email" value="{{ old('email', $nasabah->email) }}" placeholder="Contoh: nama@gmail.com">
+                    <div class="form-hint">Digunakan saat nasabah lupa password dan meminta kode OTP verifikasi.</div>
+                </div>
+
                 <div class="form-row">
                     <div class="form-group">
                         <label for="status">Status Rekening</label>
